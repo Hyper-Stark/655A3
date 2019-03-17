@@ -74,4 +74,8 @@ public class MSClientAPI
 		
     }
 
+	public boolean deleteOrder(String orderid) throws Exception {
+   		   DeleteOrderServicesAI obj = (DeleteOrderServicesAI) Naming.lookup("DeleteOrderServices");
+   		   return obj.deleteOrder(orderid);
+	}
 }

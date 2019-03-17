@@ -7,7 +7,7 @@
 *	1.0 February 2018 - Initial write of assignment 3 (ajl).
 *
 * Description: This class is the console for the an orders database. This interface uses a webservices or microservice
-* client class to update the ms_orderinfo MySQL database. 
+* client class to update the ms_orderinfo MySQL database.
 *
 * Parameters: None
 *
@@ -39,7 +39,7 @@ public class OrdersUI
 		String  address = null;						// customer address
 		String  phone = null;						// customer phone number
 		String  orderid = null;						// order ID
-		String 	response = null;					// response string from REST 
+		String 	response = null;					// response string from REST
 		Scanner keyboard = new Scanner(System.in);	// keyboard scanner object for user input
 		DateTimeFormatter dtf = null;				// Date object formatter
 		LocalDate localDate = null;					// Date object
@@ -50,7 +50,7 @@ public class OrdersUI
 		/////////////////////////////////////////////////////////////////////////////////
 
 		while (!done)
-		{	
+		{
 			// Here, is the main menu set of choices
 
 			System.out.println( "\n\n\n\n" );
@@ -58,11 +58,12 @@ public class OrdersUI
 			System.out.println( "Select an Option: \n" );
 			System.out.println( "1: Retrieve all orders in the order database." );
 			System.out.println( "2: Retrieve an order by ID." );
-			System.out.println( "3: Add a new order to the order database." );				
+			System.out.println( "3: Add a new order to the order database." );
+			System.out.println( "4: Delete an order by ID." );
 			System.out.println( "X: Exit\n" );
 			System.out.print( "\n>>>> " );
-			option = keyboard.next().charAt(0);	
-			keyboard.nextLine();	// Removes data from keyboard buffer. If you don't clear the buffer, you blow 
+			option = keyboard.next().charAt(0);
+			keyboard.nextLine();	// Removes data from keyboard buffer. If you don't clear the buffer, you blow
 									// through the next call to nextLine()
 
 			//////////// option 1 ////////////
@@ -122,7 +123,7 @@ public class OrdersUI
 				} catch (Exception e) {
 
 					System.out.println("Request failed:: " + e);
-					
+
 				}
 
 				System.out.println("\nPress enter to continue..." );
@@ -145,7 +146,7 @@ public class OrdersUI
 
 				System.out.println("Enter last name:");
 				last = keyboard.nextLine();
-		
+
 				System.out.println("Enter address:");
 				address = keyboard.nextLine();
 
@@ -154,12 +155,12 @@ public class OrdersUI
 
 				System.out.println("Creating the following order:");
 				System.out.println("==============================");
-				System.out.println(" Date:" + date);		
+				System.out.println(" Date:" + date);
 				System.out.println(" First name:" + first);
 				System.out.println(" Last name:" + last);
 				System.out.println(" Address:" + address);
 				System.out.println(" Phone:" + phone);
-				System.out.println("==============================");					
+				System.out.println("==============================");
 				System.out.println("\nPress 'y' to create this order:");
 
 				option = keyboard.next().charAt(0);
@@ -189,6 +190,41 @@ public class OrdersUI
 				option = ' '; //Clearing option. This incase the user enterd X/x the program will not exit.
 
 			} // if
+
+			if( option == '4'){
+
+				// Here we get the order ID from the user
+
+				while (true) {
+
+					System.out.print( "\nEnter the order ID: " );
+					orderid = keyboard.nextLine();
+
+					try {
+						Integer.parseInt(orderid);
+						break;
+					} catch (NumberFormatException e) {
+						System.out.println( "Not a number, please try again..." );
+						System.out.println("\nPress enter to continue..." );
+					}
+
+				} // while
+
+				try{
+				    //get operation result
+					boolean opRes = api.deleteOrder(orderid);
+					if (opRes){
+                        System.out.println("Deleted order by id: "+orderid+" successfully !");
+                    }else{
+                        System.out.println("Deleted order by id: "+orderid+" failed !");
+                    }
+				} catch (Exception e) {
+					System.out.println("Request failed:: " + e);
+				}
+
+				System.out.println("\nPress enter to continue..." );
+				c.readLine();
+			}
 
 			//////////// option X ////////////
 
