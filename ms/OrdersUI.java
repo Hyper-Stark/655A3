@@ -212,12 +212,12 @@ public class OrdersUI
 
 				try{
 				    //get operation result
-					boolean opRes = api.deleteOrder(orderid);
-					if (opRes){
-                        System.out.println("Deleted order by id: "+orderid+" successfully !");
-                    }else{
-                        System.out.println("Deleted order by id: "+orderid+" failed !");
-                    }
+					int amount = api.deleteOrder(orderid);
+					if(amount == 0){
+						System.out.println("The order indicated by the given order_id( "+orderid+" ) does not exist!");
+					}else{
+						System.out.println("Delete order by order id: "+orderid+" successfully! ");
+					}
 				} catch (Exception e) {
 					System.out.println("Request failed:: " + e);
 				}

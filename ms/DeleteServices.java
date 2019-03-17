@@ -3,7 +3,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class DeleteServices extends UnicastRemoteObject implements DeleteServicesAI {
@@ -41,9 +40,10 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
     public DeleteServices() throws RemoteException {}
 
     @Override
-    public boolean deleteOrder(String orderid) throws RemoteException {
+    public int deleteOrder(String orderid) throws RemoteException {
         // Local declarations
 
+        int amount = 0;                  // the number of records were deleted
         Connection conn = null;        // connection to the orderinfo database
         Statement stmt = null;        // A Statement object is an interface that represents a SQL statement.
 
@@ -66,7 +66,7 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
             // System.out.println("Creating statement...");
             stmt = conn.createStatement();
             String sql = "DELETE FROM orders where order_id=" + orderid;
-            stmt.executeUpdate(sql);
+            amount = stmt.executeUpdate(sql);
 
             // Clean-up environment
             stmt.close();
@@ -76,9 +76,9 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return -1;
         }
 
-        return true;
+        return amount;
     }
 }

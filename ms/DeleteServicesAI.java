@@ -8,6 +8,6 @@ public interface DeleteServicesAI extends java.rmi.Remote{
      * returns the operation result.
      *******************************************************/
 
-    boolean deleteOrder(String orderid) throws RemoteException;
+    int deleteOrder(String orderid) throws RemoteException;
 
 }
