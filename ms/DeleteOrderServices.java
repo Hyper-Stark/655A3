@@ -25,7 +25,7 @@ public class DeleteOrderServices extends UnicastRemoteObject implements DeleteOr
 
         try
         {
-            CreateServices obj = new CreateServices();
+            DeleteOrderServices obj = new DeleteOrderServices();
 
             // Bind this object instance to the name RetrieveServices in the rmiregistry
             Naming.rebind("//localhost:1099/DeleteOrderServices", obj);
