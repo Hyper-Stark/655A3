@@ -6,7 +6,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class DeleteOrderServices extends UnicastRemoteObject implements DeleteOrderServicesAI {
+public class DeleteServices extends UnicastRemoteObject implements DeleteServicesAI {
 
     static final String JDBC_CONNECTOR = "com.mysql.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://localhost/ms_orderinfo?autoReconnect=true&useSSL=false";
@@ -25,10 +25,10 @@ public class DeleteOrderServices extends UnicastRemoteObject implements DeleteOr
 
         try
         {
-            DeleteOrderServices obj = new DeleteOrderServices();
+            DeleteServices obj = new DeleteServices();
 
             // Bind this object instance to the name RetrieveServices in the rmiregistry
-            Naming.rebind("//localhost:1099/DeleteOrderServices", obj);
+            Naming.rebind("//localhost:1099/DeleteServices", obj);
 
         } catch (Exception e) {
 
@@ -38,7 +38,7 @@ public class DeleteOrderServices extends UnicastRemoteObject implements DeleteOr
 
     } // main
 
-    public DeleteOrderServices() throws RemoteException {}
+    public DeleteServices() throws RemoteException {}
 
     @Override
     public boolean deleteOrder(String orderid) throws RemoteException {
@@ -66,10 +66,9 @@ public class DeleteOrderServices extends UnicastRemoteObject implements DeleteOr
             // System.out.println("Creating statement...");
             stmt = conn.createStatement();
             String sql = "DELETE FROM orders where order_id=" + orderid;
-            ResultSet rs = stmt.executeQuery(sql);
+            stmt.executeUpdate(sql);
 
             // Clean-up environment
-            rs.close();
             stmt.close();
             conn.close();
             stmt.close();

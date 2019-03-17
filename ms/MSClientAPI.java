@@ -74,7 +74,7 @@ public class MSClientAPI
     }
 
 	public boolean deleteOrder(String orderid) throws Exception {
-   		   DeleteOrderServicesAI stub = (DeleteOrderServicesAI) Naming.lookup("DeleteOrderServices");
+   		   DeleteServicesAI stub = (DeleteServicesAI) Naming.lookup("DeleteServices");
    		   return stub.deleteOrder(orderid);
 	}
 }

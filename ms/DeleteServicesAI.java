@@ -1,6 +1,6 @@
 import java.rmi.RemoteException;
 
-public interface DeleteOrderServicesAI extends java.rmi.Remote{
+public interface DeleteServicesAI extends java.rmi.Remote{
 
     /*******************************************************
      * Deletes the order corresponding to the order id in
