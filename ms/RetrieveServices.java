@@ -32,8 +32,8 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
     static final String DB_URL = "jdbc:mysql://localhost/ms_orderinfo?autoReconnect=true&useSSL=false";
 
     // Set up the orderinfo database credentials
-    static final String USER = "root";
-    static final String PASS = "password"; //replace with your MySQL root password
+    static final String USER = "archims";
+    static final String PASS = "msorder"; //replace with your MySQL root password
 
     // Do nothing constructor
     public RetrieveServices() throws RemoteException {}
