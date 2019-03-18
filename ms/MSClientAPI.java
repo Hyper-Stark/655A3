@@ -83,7 +83,7 @@ public class MSClientAPI
 		   return stub.signin(username,password);
 	}
 
-	public boolean signup(String username, String password) throws Exception{
+	public String signup(String username, String password) throws Exception{
 		   UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
    		   return stub.signup(username, password);
 	}

@@ -261,6 +261,7 @@ public class OrdersUI
 
 			String username = null;
 			String password = null;
+			String signupRes = null;
 			int option = keyboard.next().charAt(0);
 			keyboard.nextLine();	// Removes data from keyboard buffer. If you don't clear the buffer, you blow
 
@@ -287,6 +288,34 @@ public class OrdersUI
 
 			else if(option == '2'){
 
+				while (true){
+					System.out.println("Enter an user name you want:");
+					username = keyboard.nextLine();
+
+					if(username == null || username.length() == 0 || username.length() > 20){
+						System.out.println("\nInvalid user name! The length of a valid user name should be less than 21 and greater than 0. ");
+					}else{
+						break;
+					}
+				}
+
+				while (true){
+					System.out.println("Enter a password you want:");
+					password = keyboard.nextLine();
+
+					if(password == null || password.length() == 0 || password.length() > 20){
+						System.out.println("\nInvalid password! The length of a valid password should be less than 21 and greater than 0. ");
+					}else{
+						break;
+					}
+				}
+
+				try {
+					signupRes = api.signup(username, password);
+					System.out.println(signupRes);
+				}catch (Exception e){
+					System.out.println("Sign up failed:: " + e);
+				}
 			}
 
 			//////////// option X ////////////
