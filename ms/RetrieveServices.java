@@ -54,8 +54,8 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
         } catch (Exception e) {
 
-            System.out.println("RetrieveServices binding err: " + e.getMessage()); 
-            e.printStackTrace();
+            System.out.println("RetrieveServices binding err: " + e.getMessage());
+            Logger.error("RetrieveServices binding err: " + e.getMessage());
         } 
 
     } // main
@@ -132,7 +132,7 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
             conn.close();
 
         } catch(Exception e) {
-
+            Logger.error("Retrieve orders occurred an error: " + e.getMessage());
             ReturnString = e.toString();
         } 
         
@@ -213,8 +213,8 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
         } catch(Exception e) {
 
+            Logger.error("Retrieve order by order id ("+orderid+") occurred an error: " + e.getMessage());
             ReturnString = e.toString();
-
         } 
 
         return(ReturnString);

@@ -49,7 +49,7 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
         } catch (Exception e) {
 
             System.out.println("UserServices binding err: " + e.getMessage());
-            e.printStackTrace();
+            Logger.error("UserServices binding err: " + e.getMessage());
         }
 
     } // main
@@ -100,7 +100,7 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
             return false;
 
         }catch (Exception e){
-            e.printStackTrace();
+            Logger.error("User "+username+" sign-in error: " + e.getMessage());
         }
 
         return false;
@@ -157,6 +157,7 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
             }
 
         }catch (Exception e){
+            Logger.error("User "+username+" sign-up error: " + e.getMessage());
             return e.getMessage();
         }
     }

@@ -46,7 +46,7 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
         } catch (Exception e) {
 
             System.out.println("DeleteServices binding err: " + e.getMessage());
-            e.printStackTrace();
+            Logger.error("DeleteServices binding err: " + e.getMessage());
         }
 
     } // main
@@ -89,7 +89,7 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
             conn.close();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Delete order by order id("+orderid+") occurred an error: "+e.getMessage());
             return -1;
         }
 

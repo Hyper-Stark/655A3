@@ -54,7 +54,7 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
         } catch (Exception e) {
 
             System.out.println("CreateServices binding err: " + e.getMessage()); 
-            e.printStackTrace();
+            Logger.error("CreateServices binding err: " + e.getMessage());
         } 
 
     } // main
@@ -104,7 +104,7 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
             conn.close();
 
         } catch(Exception e) {
-
+            Logger.error("Creating an order occurred an error: "+e.getMessage());
             ReturnString = e.toString();
         } 
         
