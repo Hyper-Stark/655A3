@@ -68,6 +68,8 @@ public class OrdersUI
 			keyboard.nextLine();	// Removes data from keyboard buffer. If you don't clear the buffer, you blow
 									// through the next call to nextLine()
 
+			Logger.info("user input: "+option);
+
 			//////////// option 1 ////////////
 
 			if ( option == '1' )
@@ -79,11 +81,11 @@ public class OrdersUI
 				{
 					response = api.retrieveOrders();
 					System.out.println(response);
+					Logger.info(response);
 
 				} catch (Exception e) {
-
 					System.out.println("Request failed:: " + e);
-
+					Logger.error("Request failed:: " + e);
 				}
 
 				System.out.println("\nPress enter to continue..." );
@@ -95,6 +97,7 @@ public class OrdersUI
 
 			if ( option == '2' )
 			{
+
 				// Here we get the order ID from the user
 
 				error = true;
@@ -103,6 +106,8 @@ public class OrdersUI
 				{
 					System.out.print( "\nEnter the order ID: " );
 					orderid = keyboard.nextLine();
+
+					Logger.info("Input order ID: "+orderid);
 
 					try
 					{
@@ -122,10 +127,11 @@ public class OrdersUI
 					response = api.retrieveOrders(orderid);
 					System.out.println(response);
 
+					Logger.info("Retrieve order by id response: "+response);
+
 				} catch (Exception e) {
-
+					Logger.error("Request failed:: " + e);
 					System.out.println("Request failed:: " + e);
-
 				}
 
 				System.out.println("\nPress enter to continue..." );
@@ -169,16 +175,19 @@ public class OrdersUI
 
 				if (( option == 'y') || (option == 'Y'))
 				{
+
+					Logger.info("Adding a new order -> Date: "+date+" First name: " + first + " Last name: " +last + " Address: "+ address +" Phone: "+phone);
+
 					try
 					{
 						System.out.println("\nCreating order...");
 						response = api.newOrder(date, first, last, address, phone);
 						System.out.println(response);
-
+						Logger.info(response);
 					} catch(Exception e) {
 
 						System.out.println("Request failed:: " + e);
-
+						Logger.error("Request failed:: " + e);
 					}
 
 				} else {
@@ -212,16 +221,21 @@ public class OrdersUI
 
 				} // while
 
+				Logger.info("Trying to delete order by id: "+orderid);
+
 				try{
 				    //get operation result
 					int amount = api.deleteOrder(orderid);
 					if(amount == 0){
 						System.out.println("The order indicated by the given order_id( "+orderid+" ) does not exist!");
+						Logger.info("The order indicated by the given order_id( "+orderid+" ) does not exist!");
 					}else{
 						System.out.println("Delete order by order id: "+orderid+" successfully! ");
+						Logger.info("Delete order by order id: "+orderid+" successfully! ");
 					}
 				} catch (Exception e) {
 					System.out.println("Request failed:: " + e);
+					Logger.info("Request failed:: " + e);
 				}
 
 				System.out.println("\nPress enter to continue..." );
@@ -236,6 +250,7 @@ public class OrdersUI
 
 				done = true;
 				System.out.println( "\nDone...\n\n" );
+				Logger.info("System exits");
 
 			} // if
 
@@ -277,12 +292,15 @@ public class OrdersUI
 
 					if (valid){
 						System.out.println("Signed in successfully! ");
+						Logger.info("User "+username+" signed in successfully");
 					}else{
 						System.out.println("Incorrect user name or password! ");
+						Logger.info("User entered incorrect username or password");
 					}
 
 				}catch (Exception e){
 					System.out.println("Sign in failed:: " + e);
+					Logger.error("User "+username+" tried to sign in and failed");
 				}
 			}
 
@@ -311,10 +329,13 @@ public class OrdersUI
 				}
 
 				try {
+					Logger.info("User "+username+" is trying to sign up!");
 					signupRes = api.signup(username, password);
+					Logger.info("Server sign up response: "+signupRes);
 					System.out.println(signupRes);
 				}catch (Exception e){
 					System.out.println("Sign up failed:: " + e);
+					Logger.error("Sign up failed:: " + e);
 				}
 			}
 
@@ -323,6 +344,7 @@ public class OrdersUI
 			else if ( ( option == 'X' ) || ( option == 'x' )) {
 				// Here the user is done, so we set the Done flag and halt the system
 				System.out.println( "\nDone...\n\n" );
+				Logger.info("System exits before authentication");
 				System.exit(0);
 			} // if
 		}
