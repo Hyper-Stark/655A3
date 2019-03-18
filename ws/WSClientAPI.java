@@ -156,4 +156,34 @@ public class WSClientAPI
 		return(response.toString());
 		
     } // newOrder
+
+	public String deleteOrder(String orderId) throws Exception{
+		return get("http://localhost:3000/api/orders/delete/"+orderId);
+	}
+
+	private String get(String url) throws Exception{
+		// Set up the URL and connect to the node server
+		URL obj = new URL(url);
+		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+		//Form the request header and instantiate the response code
+		con.setRequestMethod("GET");
+		int responseCode = con.getResponseCode();
+
+		//Set up a buffer to read the response from the server
+		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		//Loop through the input and build the response string.
+		//When done, close the stream.
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+
+		return (response.toString());
+	}
+
 } // WSClientAPI
