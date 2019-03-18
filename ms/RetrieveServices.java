@@ -20,8 +20,10 @@
 *	= MySQL
 	- orderinfo database 
 ******************************************************************************************************************/
-import java.rmi.Naming; 
-import java.rmi.RemoteException; 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 
@@ -34,9 +36,18 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
     // Set up the orderinfo database credentials
     static final String USER = "archims";
     static final String PASS = "msorder"; //replace with your MySQL root password
+    private UserServicesAI userServices;
 
     // Do nothing constructor
-    public RetrieveServices() throws RemoteException {}
+    public RetrieveServices() throws RemoteException {
+        try {
+            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
+        } catch (NotBoundException e) {
+            Logger.error("Cannot found user service"+e.getMessage());
+        } catch (MalformedURLException e) {
+            Logger.error("Wrong url for looking user service"+e.getMessage());
+        }
+    }
 
     // Main service loop
     public static void main(String args[]) 
@@ -65,9 +76,13 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
     // This method will return all the entries in the orderinfo database
 
-    public String retrieveOrders() throws RemoteException
+    public String retrieveOrders(String credential) throws RemoteException
     {
-      	// Local declarations
+
+        //validate user
+        validate(credential);
+
+        // Local declarations
 
         Connection conn = null;		// connection to the orderinfo database
         Statement stmt = null;		// A Statement object is an interface that represents a SQL statement.
@@ -143,9 +158,12 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
     // This method will returns the order in the orderinfo database corresponding to the id
     // provided in the argument.
 
-    public String retrieveOrders(String orderid) throws RemoteException
+    public String retrieveOrders(String credential, String orderid) throws RemoteException
     {
-      	// Local declarations
+        //validate user
+        validate(credential);
+
+        // Local declarations
 
         Connection conn = null;		// connection to the orderinfo database
         Statement stmt = null;		// A Statement object is an interface that represents a SQL statement.
@@ -221,4 +239,15 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
     } //retrieve order by id
 
+    private void validate(String credential) throws RemoteException{
+        try {
+            if(!this.userServices.validateCredential(credential)){
+                Logger.error("Verify user credential failed: ");
+                throw new RemoteException("Verify user credential failed");
+            }
+        } catch (Exception e) {
+            Logger.error("Verify user credential failed: "+e.getMessage());
+            throw new RemoteException("Verify user credential failed",e);
+        }
+    }
 } // RetrieveServices

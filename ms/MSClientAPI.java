@@ -35,10 +35,10 @@ public class MSClientAPI
 	* Returns: String of all the current orders in the orderinfo database
 	********************************************************************************/
 
-	public String retrieveOrders() throws Exception
+	public String retrieveOrders(String credential) throws Exception
 	{
            RetrieveServicesAI obj = (RetrieveServicesAI) Naming.lookup("RetrieveServices");  
-           response = obj.retrieveOrders();
+           response = obj.retrieveOrders(credential);
            return(response);
 	}
 	
@@ -51,10 +51,10 @@ public class MSClientAPI
 	*          in the orderinfo database.
 	********************************************************************************/
 
-	public String retrieveOrders(String id) throws Exception
+	public String retrieveOrders(String credential, String id) throws Exception
 	{
            RetrieveServicesAI obj = (RetrieveServicesAI) Naming.lookup("RetrieveServices");  
-           response = obj.retrieveOrders(id);
+           response = obj.retrieveOrders(credential, id);
            return(response);	
 
 	}
@@ -65,10 +65,10 @@ public class MSClientAPI
 	* Returns: String that contains the status of the create operatation
 	********************************************************************************/
 
-   	public String newOrder(String Date, String FirstName, String LastName, String Address, String Phone) throws Exception
+   	public String newOrder(String credential, String Date, String FirstName, String LastName, String Address, String Phone) throws Exception
 	{
            CreateServicesAI obj = (CreateServicesAI) Naming.lookup("CreateServices"); 
-           response = obj.newOrder(Date, FirstName, LastName, Address, Phone);
+           response = obj.newOrder(credential, Date, FirstName, LastName, Address, Phone);
            return(response);	
 		
     }

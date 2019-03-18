@@ -19,8 +19,10 @@
 *	= MySQL
 	- orderinfo database 
 ******************************************************************************************************************/
-import java.rmi.Naming; 
-import java.rmi.RemoteException; 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 
@@ -33,9 +35,18 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
     // Set up the orderinfo database credentials
     static final String USER = "archims";
     static final String PASS = "msorder"; //replace with your MySQL root password
+    private UserServicesAI userServices;
 
     // Do nothing constructor
-    public CreateServices() throws RemoteException {}
+    public CreateServices() throws RemoteException {
+        try {
+            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
+        } catch (NotBoundException e) {
+            Logger.error("Cannot found user service"+e.getMessage());
+        } catch (MalformedURLException e) {
+            Logger.error("Wrong url for looking user service"+e.getMessage());
+        }
+    }
 
     // Main service loop
     public static void main(String args[]) 
@@ -64,9 +75,11 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
 
     // This method add the entry into the ms_orderinfo database
 
-    public String newOrder(String idate, String ifirst, String ilast, String iaddress, String iphone) throws RemoteException
+    public String newOrder(String credential, String idate, String ifirst, String ilast, String iaddress, String iphone) throws RemoteException
     {
       	// Local declarations
+
+        validate(credential);
 
         Connection conn = null;		                 // connection to the orderinfo database
         Statement stmt = null;		                 // A Statement object is an interface that represents a SQL statement.
@@ -111,5 +124,17 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
         return(ReturnString);
 
     } //retrieve all orders
+
+    private void validate(String credential) throws RemoteException{
+        try {
+            if(!this.userServices.validateCredential(credential)){
+                Logger.error("Verify user credential failed: ");
+                throw new RemoteException("Verify user credential failed");
+            }
+        } catch (Exception e) {
+            Logger.error("Verify user credential failed: "+e.getMessage());
+            throw new RemoteException("Verify user credential failed",e);
+        }
+    }
 
 } // RetrieveServices
