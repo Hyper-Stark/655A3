@@ -1,3 +1,17 @@
+/****************************************************************************************************************
+ * File: DeleteServices.java
+ * Course: 17655
+ * Project: Assignment A3
+ * Author: Li Zhang
+ *
+ * Internal methods:
+ * int deleteOrder(String orderid)
+ *
+ * Description:
+ * This class is an implementation of DeleteServicesAI
+ * This class implemented the methods that will be used to delete an order.
+ *
+ ***************************************************************************************************************/
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

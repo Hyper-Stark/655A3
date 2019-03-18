@@ -73,16 +73,31 @@ public class MSClientAPI
 		
     }
 
+	/********************************************************************************
+	 * Description: Delete an order from the orderinfo database
+	 * Parameters: Order ID
+	 * Returns: the number of the deleted records.
+	 ********************************************************************************/
 	public int deleteOrder(String orderid) throws Exception {
    		   DeleteServicesAI stub = (DeleteServicesAI) Naming.lookup("DeleteServices");
    		   return stub.deleteOrder(orderid);
 	}
 
+	/********************************************************************************
+	 * Description: Verify whether the given pair of username and password is valid or not
+	 * Parameters: user name, password
+	 * Returns: whether this combination registered or not
+	 ********************************************************************************/
 	public boolean signin(String username, String password) throws Exception{
 		   UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
 		   return stub.signin(username,password);
 	}
 
+	/********************************************************************************
+	 * Description: Create a new user account in the database.
+	 * Parameters: user name, password
+	 * Returns: the message returned by the server
+	 ********************************************************************************/
 	public String signup(String username, String password) throws Exception{
 		   UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
    		   return stub.signup(username, password);

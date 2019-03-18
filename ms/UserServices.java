@@ -1,3 +1,19 @@
+/****************************************************************************************************************
+ * File: UserServices.java
+ * Course: 17655
+ * Project: Assignment A3
+ * Author: Li Zhang
+ *
+ * Internal methods:
+ * boolean signin(String username, String password)
+ * String signup(String username, String password)
+ *
+ * Description:
+ * This class is an implementation of UserServicesAI interface.
+ * This class is used to deal with user authentication related problems, including signing in and signing up
+ *
+ ***************************************************************************************************************/
+
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
