@@ -78,9 +78,9 @@ public class MSClientAPI
 	 * Parameters: Order ID
 	 * Returns: the number of the deleted records.
 	 ********************************************************************************/
-	public int deleteOrder(String orderid) throws Exception {
+	public int deleteOrder(String credential, String orderid) throws Exception {
    		   DeleteServicesAI stub = (DeleteServicesAI) Naming.lookup("DeleteServices");
-   		   return stub.deleteOrder(orderid);
+   		   return stub.deleteOrder(credential, orderid);
 	}
 
 	/********************************************************************************
@@ -88,7 +88,7 @@ public class MSClientAPI
 	 * Parameters: user name, password
 	 * Returns: whether this combination registered or not
 	 ********************************************************************************/
-	public boolean signin(String username, String password) throws Exception{
+	public String signin(String username, String password) throws Exception{
 		   UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
 		   return stub.signin(username,password);
 	}

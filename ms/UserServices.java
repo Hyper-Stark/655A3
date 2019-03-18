@@ -14,13 +14,18 @@
  *
  ***************************************************************************************************************/
 
+import java.math.BigInteger;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserServices extends UnicastRemoteObject implements UserServicesAI{
 
@@ -31,6 +36,17 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
     // Set up the orderinfo database credentials
     static final String USER = "archims";
     static final String PASS = "msorder"; //replace with your MySQL root password
+    private static final Set<String> credentials = new HashSet<String>();
+    private static MessageDigest oracle = null;
+
+
+    static {
+        try {
+            oracle = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            Logger.error("Initialize MessageDigest(MD5) failed");
+        }
+    }
 
     // Main service loop
     public static void main(String args[])
@@ -58,7 +74,7 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
 
 
     @Override
-    public boolean signin(String username, String password) throws Exception {
+    public String signin(String username, String password) throws Exception {
 
         // Local declarations
 
@@ -94,16 +110,19 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
             while (rs.next()) {
                 // there is at least on pair of valid username and password.
                 // authentication succeed
-                return true;
+                byte[] bytes = (username+System.currentTimeMillis()).getBytes();
+                String cred = new BigInteger(1,oracle.digest(bytes)).toString(16);
+                credentials.add(cred);
+                return cred;
             }
 
-            return false;
+            return "";
 
         }catch (Exception e){
             Logger.error("User "+username+" sign-in error: " + e.getMessage());
         }
 
-        return false;
+        return "";
     }
 
     @Override
@@ -161,4 +180,10 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
             return e.getMessage();
         }
     }
+
+    public boolean validateCredential(String credential) throws Exception{
+        return credentials.contains(credential);
+    }
+
+
 }

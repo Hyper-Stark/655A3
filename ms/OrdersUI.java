@@ -44,8 +44,9 @@ public class OrdersUI
 		DateTimeFormatter dtf = null;				// Date object formatter
 		LocalDate localDate = null;					// Date object
 		MSClientAPI api = new MSClientAPI();	// RESTful api object
+		String credential = null;
 
-		authenticate(keyboard,api);
+		credential = authenticate(keyboard,api);
 
 		/////////////////////////////////////////////////////////////////////////////////
 		// Main UI loop
@@ -225,7 +226,7 @@ public class OrdersUI
 
 				try{
 				    //get operation result
-					int amount = api.deleteOrder(orderid);
+					int amount = api.deleteOrder(credential, orderid);
 					if(amount == 0){
 						System.out.println("The order indicated by the given order_id( "+orderid+" ) does not exist!");
 						Logger.info("The order indicated by the given order_id( "+orderid+" ) does not exist!");
@@ -259,11 +260,9 @@ public class OrdersUI
   	} // main
 
 
-	public static void authenticate(Scanner keyboard, MSClientAPI api){
+	public static String authenticate(Scanner keyboard, MSClientAPI api){
 
-		boolean valid = false;
-
-		while (!valid){
+		while (true){
 
 			System.out.println( "\n\n" );
 			System.out.println( "Welcome to Orders Database, please sign in or sign up first.\n");
@@ -288,11 +287,12 @@ public class OrdersUI
 				password = keyboard.nextLine();
 
 				try {
-					valid = api.signin(username,password);
+					String credential = api.signin(username,password);
 
-					if (valid){
+					if (credential != null && credential.length() > 0){
 						System.out.println("Signed in successfully! ");
 						Logger.info("User "+username+" signed in successfully");
+						return credential;
 					}else{
 						System.out.println("Incorrect user name or password! ");
 						Logger.info("User entered incorrect username or password");

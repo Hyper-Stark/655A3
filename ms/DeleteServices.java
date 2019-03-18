@@ -12,7 +12,9 @@
  * This class implemented the methods that will be used to delete an order.
  *
  ***************************************************************************************************************/
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -28,6 +30,7 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
     static final String USER = "archims";
     static final String PASS = "msorder"; //replace with your MySQL root password
 
+    private UserServicesAI userServices;
 
     // Main service loop
     public static void main(String args[])
@@ -51,10 +54,22 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
 
     } // main
 
-    public DeleteServices() throws RemoteException {}
+    public DeleteServices() throws RemoteException {
+        try {
+            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
+        } catch (NotBoundException e) {
+            Logger.error("Cannot found user service"+e.getMessage());
+        } catch (MalformedURLException e) {
+            Logger.error("Wrong url for looking user service"+e.getMessage());
+        }
+    }
 
     @Override
-    public int deleteOrder(String orderid) throws RemoteException {
+    public int deleteOrder(String credential, String orderid) throws RemoteException {
+
+        // Validate user credential
+        validate(credential);
+
         // Local declarations
 
         int amount = 0;                  // the number of records were deleted
@@ -94,5 +109,17 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
         }
 
         return amount;
+    }
+
+    private void validate(String credential) throws RemoteException{
+        try {
+            if(!this.userServices.validateCredential(credential)){
+                Logger.error("Verify user credential failed: ");
+                throw new RemoteException("Verify user credential failed");
+            }
+        } catch (Exception e) {
+            Logger.error("Verify user credential failed: "+e.getMessage());
+            throw new RemoteException("Verify user credential failed",e);
+        }
     }
 }

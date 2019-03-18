@@ -19,7 +19,7 @@ public interface UserServicesAI extends java.rmi.Remote{
      * Verify a user by user name and password
      * Returns true if the user is valid otherwise false
      *******************************************************/
-    boolean signin(String username, String password) throws Exception;
+    String signin(String username, String password) throws Exception;
 
     /*******************************************************
      * Creates a new user according given user name and password
@@ -29,5 +29,19 @@ public interface UserServicesAI extends java.rmi.Remote{
      *     if there was an exception happened, report this.
      *******************************************************/
     String signup(String username, String password) throws Exception;
+
+
+    /*******************************************************
+     *
+     * All other micro services should use this method to verify the
+     * user who is requesting has been authenticated. If the user was
+     * not authenticated, then other service should not respond the
+     * user's request.
+     *
+     * @param credential the credential string need to be validated
+     * @return whether this credential is valid or not
+     * @throws Exception possible remote exception
+     *******************************************************/
+    boolean validateCredential(String credential) throws Exception;
 
 }
