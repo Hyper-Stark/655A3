@@ -45,6 +45,8 @@ public class OrdersUI
 		LocalDate localDate = null;					// Date object
 		MSClientAPI api = new MSClientAPI();	// RESTful api object
 
+		authenticate(keyboard,api);
+
 		/////////////////////////////////////////////////////////////////////////////////
 		// Main UI loop
 		/////////////////////////////////////////////////////////////////////////////////
@@ -240,5 +242,61 @@ public class OrdersUI
 		} // while
 
   	} // main
+
+
+	public static void authenticate(Scanner keyboard, MSClientAPI api){
+
+		boolean valid = false;
+
+		while (!valid){
+
+			System.out.println( "\n\n" );
+			System.out.println( "Welcome to Orders Database, please sign in or sign up first.\n");
+			System.out.println( "Select an Option: \n" );
+			System.out.println( "1: Sign in" );
+			System.out.println( "2: Sign up" );
+			System.out.println( "X: Exit\n" );
+			System.out.print( "\n>>>> " );
+
+
+			String username = null;
+			String password = null;
+			int option = keyboard.next().charAt(0);
+			keyboard.nextLine();	// Removes data from keyboard buffer. If you don't clear the buffer, you blow
+
+			if(option == '1'){
+				System.out.println("Enter user name:");
+				username = keyboard.nextLine();
+
+				System.out.println("Enter password:");
+				password = keyboard.nextLine();
+
+				try {
+					valid = api.signin(username,password);
+
+					if (valid){
+						System.out.println("Signed in successfully! ");
+					}else{
+						System.out.println("Incorrect user name or password! ");
+					}
+
+				}catch (Exception e){
+					System.out.println("Sign in failed:: " + e);
+				}
+			}
+
+			else if(option == '2'){
+
+			}
+
+			//////////// option X ////////////
+
+			else if ( ( option == 'X' ) || ( option == 'x' )) {
+				// Here the user is done, so we set the Done flag and halt the system
+				System.out.println( "\nDone...\n\n" );
+				System.exit(0);
+			} // if
+		}
+	}
 
 } // OrdersUI

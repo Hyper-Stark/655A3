@@ -77,4 +77,14 @@ public class MSClientAPI
    		   DeleteServicesAI stub = (DeleteServicesAI) Naming.lookup("DeleteServices");
    		   return stub.deleteOrder(orderid);
 	}
+
+	public boolean signin(String username, String password) throws Exception{
+		   UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
+		   return stub.signin(username,password);
+	}
+
+	public boolean signup(String username, String password) throws Exception{
+		   UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
+   		   return stub.signup(username, password);
+	}
 }
