@@ -78,7 +78,7 @@ public class OrdersUI
 				System.out.println( "\nRetrieving All Orders::" );
 				try
 				{
-					response = api.retrieveOrders();
+					response = api.retrieveOrders(credential);
 					System.out.println(response);
 
 				} catch (Exception e) {
@@ -120,7 +120,7 @@ public class OrdersUI
 
 				try
 				{
-					response = api.retrieveOrders(orderid);
+					response = api.retrieveOrders(credential,orderid);
 					System.out.println(response);
 
 				} catch (Exception e) {
@@ -173,7 +173,7 @@ public class OrdersUI
 					try
 					{
 						System.out.println("\nCreating order...");
-						response = api.newOrder(date, first, last, address, phone);
+						response = api.newOrder(credential, date, first, last, address, phone);
 						System.out.println(response);
 
 					} catch(Exception e) {

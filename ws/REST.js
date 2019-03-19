@@ -53,6 +53,14 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
   
     router.get("/orders",function(req,res){
         console.log("Getting all database entries..." );
+
+        var credential = req.get("Credential")
+        if (!credentials.has(credential)){
+            res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            return;
+        }
+        console.log("Validate credential successfully!");
+
         var query = "SELECT * FROM ??";
         var table = ["orders"];
         query = mysql.format(query,table);
@@ -60,7 +68,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
             if(err) {
                 res.json({"Error" : true, "Message" : "Error executing MySQL query"});
             } else {
-                res.json({"Error" : false, "Message" : "Success", "Orders" : rows});
+                res.json({"Error" : false, "Message" : "Retrieve succeed ", "Orders" : rows});
             }
         });
     });
@@ -71,6 +79,14 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
      
     router.get("/orders/:order_id",function(req,res){
         console.log("Getting order ID: ", req.params.order_id );
+
+        var credential = req.get("Credential")
+        if (!credentials.has(credential)){
+            res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            return;
+        }
+        console.log("Validate credential successfully!");
+
         var query = "SELECT * FROM ?? WHERE ??=?";
         var table = ["orders","order_id",req.params.order_id];
         query = mysql.format(query,table);
@@ -78,7 +94,11 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
             if(err) {
                 res.json({"Error" : true, "Message" : "Error executing MySQL query"});
             } else {
-                res.json({"Error" : false, "Message" : "Success", "Users" : rows});
+                if (rows.length > 0){
+                    res.json({"Error" : false, "Message" : "Retrieve succeed ", "Order" : rows[0]});
+                }else{
+                    res.json({"Error": true, "Message": "the order indicated by the given id does not exist!"});
+                }
             }
         });
     });
@@ -88,8 +108,14 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
     // res parameter is the response object 
   
     router.post("/orders",function(req,res){
-        //console.log("url:", req.url);
-        //console.log("body:", req.body);
+
+        var credential = req.get("Credential")
+        if (!credentials.has(credential)){
+            res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            return;
+        }
+        console.log("Validate credential successfully!");
+
         console.log("Adding to orders table ", req.body.order_date,",",req.body.first_name,",",req.body.last_name,",",req.body.address,",",req.body.phone);
         var query = "INSERT INTO ??(??,??,??,??,??) VALUES (?,?,?,?,?)";
         var table = ["orders","order_date","first_name","last_name","address","phone",req.body.order_date,req.body.first_name,req.body.last_name,req.body.address,req.body.phone];
@@ -98,7 +124,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
             if(err) {
                 res.json({"Error" : true, "Message" : "Error executing MySQL query"});
             } else {
-                res.json({"Error" : false, "Message" : "User Added !"});
+                res.json({"Error" : false, "Message" : "Order Added !"});
             }
         });
     });

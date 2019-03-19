@@ -20,6 +20,8 @@
 * External Dependencies: None
 ******************************************************************************************************************/
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -27,8 +29,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class WSClientAPI
 {
@@ -38,35 +38,11 @@ public class WSClientAPI
 	* Returns: String of all the current orders in the orderinfo database
 	********************************************************************************/
 
-	public String retrieveOrders() throws Exception
+	public String retrieveOrders(String credential) throws Exception
 	{
 		// Set up the URL and connect to the node server
-
-		String url = "http://localhost:3000/api/orders";
-
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-		//Form the request header and instantiate the response code
-		con.setRequestMethod("GET");
-		int responseCode = con.getResponseCode();
-
-
-		//Set up a buffer to read the response from the server
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		//Loop through the input and build the response string.
-		//When done, close the stream.
-		while ((inputLine = in.readLine()) != null) 
-		{
-			response.append(inputLine);
-		}
-		in.close();
-
-		return(response.toString());
-
+		String resp = get(credential, "http://localhost:3000/api/orders");
+		return extractField("Message",resp) + ":" + extractField("Orders",resp);
 	}
 	
 	/********************************************************************************
@@ -77,33 +53,11 @@ public class WSClientAPI
 	*		   orderinfo database.
 	********************************************************************************/
 
-	public String retrieveOrders(String id) throws Exception
+	public String retrieveOrders(String credential,String id) throws Exception
 	{
 		// Set up the URL and connect to the node server
-		String url = "http://localhost:3000/api/orders/"+id;
-		URL obj = new URL(url);
-		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-
-		//Form the request header and instantiate the response code
-		con.setRequestMethod("GET");
-		int responseCode = con.getResponseCode();
-
-		//Set up a buffer to read the response from the server
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuffer response = new StringBuffer();
-
-		//Loop through the input and build the response string.
-		//When done, close the stream.		
-
-		while ((inputLine = in.readLine()) != null) 
-		{
-			response.append(inputLine);
-		}
-		in.close();
-
-		return(response.toString());
-
+		String resp = get(credential,"http://localhost:3000/api/orders/"+id);
+		return extractField("Message",resp) + " : " + extractField("Order",resp);
 	}
 
 	/********************************************************************************
@@ -112,49 +66,18 @@ public class WSClientAPI
 	* Returns: String that contains the status of the POST operation
 	********************************************************************************/
 
-   	public String newOrder(String Date, String FirstName, String LastName, String Address, String Phone) throws Exception
+   	public String newOrder(String credential,String Date, String FirstName, String LastName, String Address, String Phone) throws Exception
 	{
-		// Set up the URL and connect to the node server		
-		URL url = new URL("http://localhost:3000/api/orders");
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
-		// The POST parameters
-		String input = "order_date="+Date+"&first_name="+FirstName+"&last_name="+LastName+"&address="+Address+"&phone="+Phone;
+		Map<String,String> params = new HashMap<String,String>();
+		params.put("order_date",Date);
+		params.put("first_name",FirstName);
+		params.put("last_name",LastName);
+		params.put("address",Address);
+		params.put("phone",Phone);
 
-		//Configure the POST connection for the parameters
-		conn.setRequestMethod("POST");
-        conn.setRequestProperty("Accept-Language", "en-GB,en;q=0.5");
-        conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        conn.setRequestProperty("Content-length", Integer.toString(input.length()));
-        conn.setRequestProperty("Content-Language", "en-GB");
-        conn.setRequestProperty("charset", "utf-8");
-        conn.setUseCaches(false);
-        conn.setDoOutput(true);
-
-        // Set up a stream and write the parameters to the server
-		OutputStream os = conn.getOutputStream();
-		os.write(input.getBytes());
-		os.flush();
-
-		//Loop through the input and build the response string.
-		//When done, close the stream.	
-		BufferedReader in = new BufferedReader(new InputStreamReader((conn.getInputStream())));
-		String inputLine;		
-		StringBuffer response = new StringBuffer();
-
-		//Loop through the input and build the response string.
-		//When done, close the stream.		
-
-		while ((inputLine = in.readLine()) != null) 
-		{
-			response.append(inputLine);
-		}
-		
-		in.close();
-		conn.disconnect();
-
-		return(response.toString());
-		
+		String resp = post(credential,"http://localhost:3000/api/orders",params);
+		return extractField("Message",resp);
     } // newOrder
 
 	public String deleteOrder(String credential, String orderId) throws Exception{
@@ -236,10 +159,14 @@ public class WSClientAPI
 		return(response.toString());
 	}
 
-	private String get(String url) throws Exception{
+	private String get(String credential, String url) throws Exception{
 		// Set up the URL and connect to the node server
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+		if (credential != null && credential.length() > 0){
+			con.setRequestProperty("Credential",credential);
+		}
 
 		//Form the request header and instantiate the response code
 		con.setRequestMethod("GET");
@@ -262,16 +189,8 @@ public class WSClientAPI
 	}
 
 	private static String extractField(String key, String msg){
-		Matcher matcher = Pattern.compile("\"[\\s|\\S]*?\"").matcher(msg);
-		while (matcher.find()){
-			String tmp = matcher.group();
-			if (("\""+key+"\"").equals(tmp)){
-				String cred = matcher.find() ? matcher.group() : null;
-				cred = cred != null ? cred.substring(1,cred.length()-1) : "";
-				return cred;
-			}
-		}
-		return "";
+		JSONObject obj = new JSONObject(msg);
+		return obj.get(key).toString();
 	}
 
 } // WSClientAPI
