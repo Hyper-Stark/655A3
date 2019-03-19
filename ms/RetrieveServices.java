@@ -39,15 +39,7 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
     private UserServicesAI userServices;
 
     // Do nothing constructor
-    public RetrieveServices() throws RemoteException {
-        try {
-            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
-        } catch (NotBoundException e) {
-            Logger.error("Cannot found user service"+e.getMessage());
-        } catch (MalformedURLException e) {
-            Logger.error("Wrong url for looking user service"+e.getMessage());
-        }
-    }
+    public RetrieveServices() throws RemoteException {}
 
     // Main service loop
     public static void main(String args[]) 
@@ -239,15 +231,32 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
     } //retrieve order by id
 
-    private void validate(String credential) throws RemoteException{
+    private void validate(String credential) throws RemoteException {
+
+        if (this.userServices == null){
+            initUserService();
+        }
+
         try {
-            if(!this.userServices.validateCredential(credential)){
+            if (!this.userServices.validateCredential(credential)) {
                 Logger.error("Verify user credential failed: ");
                 throw new RemoteException("Verify user credential failed");
             }
-        } catch (Exception e) {
-            Logger.error("Verify user credential failed: "+e.getMessage());
-            throw new RemoteException("Verify user credential failed",e);
+        }catch (Exception e2) {
+            Logger.error("Verify user credential failed: "+e2.getMessage());
+            throw new RemoteException("Verify user credential failed",e2);
+        }
+    }
+
+    private void initUserService(){
+        try {
+            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
+        } catch (NotBoundException e) {
+            Logger.error("Cannot found user service"+e.getMessage());
+        } catch (MalformedURLException e) {
+            Logger.error("Wrong url for looking user service"+e.getMessage());
+        } catch (RemoteException e) {
+            Logger.error("RemoteException: "+e.getMessage());
         }
     }
 } // RetrieveServices

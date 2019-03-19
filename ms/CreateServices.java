@@ -125,16 +125,32 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
 
     } //retrieve all orders
 
-    private void validate(String credential) throws RemoteException{
+    private void validate(String credential) throws RemoteException {
+
+        if (this.userServices == null){
+            initUserService();
+        }
+
         try {
-            if(!this.userServices.validateCredential(credential)){
+            if (!this.userServices.validateCredential(credential)) {
                 Logger.error("Verify user credential failed: ");
                 throw new RemoteException("Verify user credential failed");
             }
-        } catch (Exception e) {
-            Logger.error("Verify user credential failed: "+e.getMessage());
-            throw new RemoteException("Verify user credential failed",e);
+        }catch (Exception e2) {
+            Logger.error("Verify user credential failed: "+e2.getMessage());
+            throw new RemoteException("Verify user credential failed",e2);
         }
     }
 
+    private void initUserService(){
+        try {
+            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
+        } catch (NotBoundException e) {
+            Logger.error("Cannot found user service"+e.getMessage());
+        } catch (MalformedURLException e) {
+            Logger.error("Wrong url for looking user service"+e.getMessage());
+        } catch (RemoteException e) {
+            Logger.error("RemoteException: "+e.getMessage());
+        }
+    }
 } // RetrieveServices
