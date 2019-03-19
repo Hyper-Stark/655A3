@@ -166,24 +166,15 @@ public class WSClientAPI
    		params.put("username",username);
    		params.put("password",passwd);
 		String resp = post("http://localhost:3000/api/orders/signin/",params);
-
-		Matcher matcher = Pattern.compile("\"[\\s|\\S]*?\"").matcher(resp);
-		while (matcher.find()){
-			String tmp = matcher.group();
-			if ("\"Credential\"".equals(tmp)){
-				String cred = matcher.find() ? matcher.group() : null;
-				cred = cred != null ? cred.substring(1,cred.length()-1) : "";
-				return cred;
-			}
-		}
-		return "";
+		return extractField("Credential",resp);
 	}
 
 	public String signup(String username, String passwd) throws Exception{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("username",username);
 		params.put("password",passwd);
-		return post("http://localhost:3000/api/orders/signup/",params);
+		String resp = post("http://localhost:3000/api/orders/signup/",params);
+		return extractField("Message",resp);
 	}
 
 	private String post(String urlStr, Map<String,String> data) throws Exception{
@@ -262,6 +253,19 @@ public class WSClientAPI
 		in.close();
 
 		return (response.toString());
+	}
+
+	private static String extractField(String key, String msg){
+		Matcher matcher = Pattern.compile("\"[\\s|\\S]*?\"").matcher(msg);
+		while (matcher.find()){
+			String tmp = matcher.group();
+			if (("\""+key+"\"").equals(tmp)){
+				String cred = matcher.find() ? matcher.group() : null;
+				cred = cred != null ? cred.substring(1,cred.length()-1) : "";
+				return cred;
+			}
+		}
+		return "";
 	}
 
 } // WSClientAPI

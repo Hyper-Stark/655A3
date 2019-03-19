@@ -126,14 +126,51 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         query = mysql.format(query,table);
         connection.query(query, function (err,rows) {
             if (err){
-                res.json({"Error":true,"Message":"Error occurred when execute signin sql: "+err})
+                res.json({"Error":true,"Message":"Error occurred when execute sign in sql: "+err})
             } else if(rows.length > 0){
                 var credential = CREDFUN.MD5(username+Date.now());
                 credentials.add(credential);
                 res.json({"Error":false,"Credential":credential});
-           }
+           } else {
+                res.json({"Error":true,"Credential":""});
+            }
         });
     });
+
+
+    router.post("/orders/signup",function (req,res) {
+        console.log("Trying to register a new account");
+        username = req.body.username;
+        password = req.body.password;
+        var query = "SELECT * FROM ?? where ??=?;";
+        var table = ['users','user_name',username];
+        query = mysql.format(query,table);
+        connection.query(query,function (err,rows) {
+            if (err){
+                res.json({"Error":true,"Message":"Error occurred when execute sign up query sql: "+err})
+            }else{
+                if (rows.length > 0){
+                    res.json({"Error":true,"Message":"This username has been used, please try another"});
+                }else{
+
+                    var insert = "INSERT INTO users(??,??) VALUES(?,?)";
+                    var args  = ["user_name","password",username,password];
+                    insert = mysql.format(insert,args);
+                    connection.query(insert,function (err, result) {
+                        if (err){
+                            res.json({"Error":true,"Message":"Error occurred when execute sign up insert sql: "+ err});
+                        }else{
+                            if (result.affectedRows > 0){
+                                res.json({"Error":false,"Message":"Signed up successfully! "});
+                            }else {
+                                res.json({"Error":true,"Message":"Failed to sign up! "});
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    })
 }
 
 // The next line just makes this module available... think of it as a kind package statement in Java
