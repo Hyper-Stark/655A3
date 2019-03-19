@@ -217,7 +217,7 @@ public class OrdersUI
 
 				try{
 					//get operation result
-					String result = api.deleteOrder(orderid);
+					String result = api.deleteOrder(credential, orderid);
 					System.out.println(result);
 				} catch (Exception e) {
 					System.out.println("Request failed:: " + e);

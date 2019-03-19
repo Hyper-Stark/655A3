@@ -157,15 +157,16 @@ public class WSClientAPI
 		
     } // newOrder
 
-	public String deleteOrder(String orderId) throws Exception{
-		return get("http://localhost:3000/api/orders/delete/"+orderId);
+	public String deleteOrder(String credential, String orderId) throws Exception{
+		String resp = post(credential,"http://localhost:3000/api/orders/delete/"+orderId,null);
+		return extractField("Message",resp);
 	}
 
 	public String signin(String username, String passwd) throws Exception{
    		Map<String,String> params = new HashMap<String,String>();
    		params.put("username",username);
    		params.put("password",passwd);
-		String resp = post("http://localhost:3000/api/orders/signin/",params);
+		String resp = post(null,"http://localhost:3000/api/orders/signin/",params);
 		return extractField("Credential",resp);
 	}
 
@@ -173,11 +174,11 @@ public class WSClientAPI
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("username",username);
 		params.put("password",passwd);
-		String resp = post("http://localhost:3000/api/orders/signup/",params);
+		String resp = post(null,"http://localhost:3000/api/orders/signup/",params);
 		return extractField("Message",resp);
 	}
 
-	private String post(String urlStr, Map<String,String> data) throws Exception{
+	private String post(String credential, String urlStr, Map<String,String> data) throws Exception{
 		// Set up the URL and connect to the node server
 		URL url = new URL(urlStr);
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -185,12 +186,14 @@ public class WSClientAPI
 		// The POST parameters
 		boolean firstParam = true;
 		StringBuilder sb = new StringBuilder();
-		for(Map.Entry<String,String> entry: data.entrySet()){
-			if(firstParam){
-				sb.append(entry.getKey()+"="+entry.getValue());
-				firstParam = false;
-			}else {
-				sb.append("&"+entry.getKey()+"="+entry.getValue());
+		if (data != null){
+			for(Map.Entry<String,String> entry: data.entrySet()){
+				if(firstParam){
+					sb.append(entry.getKey()+"="+entry.getValue());
+					firstParam = false;
+				}else {
+					sb.append("&"+entry.getKey()+"="+entry.getValue());
+				}
 			}
 		}
 		String input = sb.toString();
@@ -202,6 +205,9 @@ public class WSClientAPI
 		conn.setRequestProperty("Content-length", Integer.toString(input.length()));
 		conn.setRequestProperty("Content-Language", "en-GB");
 		conn.setRequestProperty("charset", "utf-8");
+		if (credential != null && credential.length() > 0){
+			conn.setRequestProperty("Credential",credential);
+		}
 		conn.setUseCaches(false);
 		conn.setDoOutput(true);
 

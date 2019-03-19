@@ -103,8 +103,14 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         });
     });
 
-    router.get("/orders/delete/:order_id",function (req,res) {
+    router.post("/orders/delete/:order_id",function (req,res) {
         console.log("Getting order ID:" + req.params.order_id);
+        var credential = req.get("Credential")
+        if (!credentials.has(credential)){
+            res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            return;
+        }
+
         var query = "DELETE FROM ?? where ??=?;";
         var table = ['orders','order_id',req.params.order_id];
         query = mysql.format(query,table);
@@ -112,7 +118,11 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
             if (err){
                 res.json({"Error":true, "Message":"Error executing MySQL query"});
             }else{
-                res.json({"Error" : false, "Message" : "Order deleted !"});
+                if(rows.affectedRows > 0){
+                    res.json({"Error" : false, "Message" : "Order deleted !"});
+                }else{
+                    res.json({"Error": true, "Message": "The order indicated by the given order_id("+req.params.order_id+") does not exist!"})
+                }
             }
         })
     });
