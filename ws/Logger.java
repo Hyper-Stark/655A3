@@ -28,7 +28,7 @@ public class Logger {
     static {
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         try {
-            fw = new FileWriter(new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".log");
+            fw = new FileWriter(new SimpleDateFormat("yyyy-MM-dd").format(new Date())+"-client.log");
             logger = new BufferedWriter(fw);
         } catch (IOException e) {
             e.printStackTrace();
