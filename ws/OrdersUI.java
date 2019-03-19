@@ -44,6 +44,10 @@ public class OrdersUI
 		LocalDate localDate = null;					// Date object
 		WSClientAPI api = new WSClientAPI();	// RESTful api object
 
+		String credential = null;
+
+		credential = authenticate(keyboard,api);
+
 		/////////////////////////////////////////////////////////////////////////////////
 		// Main UI loop
 		/////////////////////////////////////////////////////////////////////////////////
@@ -238,5 +242,96 @@ public class OrdersUI
 		} // while
 
   	} // main
+
+
+	public static String authenticate(Scanner keyboard, WSClientAPI api){
+
+		while (true){
+
+			System.out.println( "\n\n" );
+			System.out.println( "Welcome to Orders Database, please sign in or sign up first.\n");
+			System.out.println( "Select an Option: \n" );
+			System.out.println( "1: Sign in" );
+			System.out.println( "2: Sign up" );
+			System.out.println( "X: Exit\n" );
+			System.out.print( "\n>>>> " );
+
+
+			String username = null;
+			String password = null;
+			String signupRes = null;
+			int option = keyboard.next().charAt(0);
+			keyboard.nextLine();	// Removes data from keyboard buffer. If you don't clear the buffer, you blow
+
+			if(option == '1'){
+				System.out.println("Enter user name:");
+				username = keyboard.nextLine();
+
+				System.out.println("Enter password:");
+				password = keyboard.nextLine();
+
+				try {
+					String credential = api.signin(username,password);
+
+					if (credential != null && credential.length() > 0){
+						System.out.println("Signed in successfully! ");
+						Logger.info("User "+username+" signed in successfully");
+						return credential;
+					}else{
+						System.out.println("Incorrect user name or password! ");
+						Logger.info("User entered incorrect username or password");
+					}
+
+				}catch (Exception e){
+					System.out.println("Sign in failed:: " + e);
+					Logger.error("User "+username+" tried to sign in and failed");
+				}
+			}
+
+			else if(option == '2'){
+
+				while (true){
+					System.out.println("Enter an user name you want:");
+					username = keyboard.nextLine();
+
+					if(username == null || username.length() == 0 || username.length() > 20){
+						System.out.println("\nInvalid user name! The length of a valid user name should be less than 21 and greater than 0. ");
+					}else{
+						break;
+					}
+				}
+
+				while (true){
+					System.out.println("Enter a password you want:");
+					password = keyboard.nextLine();
+
+					if(password == null || password.length() == 0 || password.length() > 20){
+						System.out.println("\nInvalid password! The length of a valid password should be less than 21 and greater than 0. ");
+					}else{
+						break;
+					}
+				}
+
+				try {
+					Logger.info("User "+username+" is trying to sign up!");
+					signupRes = api.signup(username, password);
+					Logger.info("Server sign up response: "+signupRes);
+					System.out.println(signupRes);
+				}catch (Exception e){
+					System.out.println("Sign up failed:: " + e);
+					Logger.error("Sign up failed:: " + e);
+				}
+			}
+
+			//////////// option X ////////////
+
+			else if ( ( option == 'X' ) || ( option == 'x' )) {
+				// Here the user is done, so we set the Done flag and halt the system
+				System.out.println( "\nDone...\n\n" );
+				Logger.info("System exits before authentication");
+				System.exit(0);
+			} // if
+		}
+	}// authenticate
 
 } // OrdersUI

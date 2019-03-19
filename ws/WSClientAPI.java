@@ -21,14 +21,14 @@
 ******************************************************************************************************************/
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WSClientAPI
 {
@@ -159,6 +159,84 @@ public class WSClientAPI
 
 	public String deleteOrder(String orderId) throws Exception{
 		return get("http://localhost:3000/api/orders/delete/"+orderId);
+	}
+
+	public String signin(String username, String passwd) throws Exception{
+   		Map<String,String> params = new HashMap<String,String>();
+   		params.put("username",username);
+   		params.put("password",passwd);
+		String resp = post("http://localhost:3000/api/orders/signin/",params);
+
+		Matcher matcher = Pattern.compile("\"[\\s|\\S]*?\"").matcher(resp);
+		while (matcher.find()){
+			String tmp = matcher.group();
+			if ("\"Credential\"".equals(tmp)){
+				String cred = matcher.find() ? matcher.group() : null;
+				cred = cred != null ? cred.substring(1,cred.length()-1) : "";
+				return cred;
+			}
+		}
+		return "";
+	}
+
+	public String signup(String username, String passwd) throws Exception{
+		Map<String,String> params = new HashMap<String,String>();
+		params.put("username",username);
+		params.put("password",passwd);
+		return post("http://localhost:3000/api/orders/signup/",params);
+	}
+
+	private String post(String urlStr, Map<String,String> data) throws Exception{
+		// Set up the URL and connect to the node server
+		URL url = new URL(urlStr);
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+		// The POST parameters
+		boolean firstParam = true;
+		StringBuilder sb = new StringBuilder();
+		for(Map.Entry<String,String> entry: data.entrySet()){
+			if(firstParam){
+				sb.append(entry.getKey()+"="+entry.getValue());
+				firstParam = false;
+			}else {
+				sb.append("&"+entry.getKey()+"="+entry.getValue());
+			}
+		}
+		String input = sb.toString();
+
+		//Configure the POST connection for the parameters
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Accept-Language", "en-GB,en;q=0.5");
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		conn.setRequestProperty("Content-length", Integer.toString(input.length()));
+		conn.setRequestProperty("Content-Language", "en-GB");
+		conn.setRequestProperty("charset", "utf-8");
+		conn.setUseCaches(false);
+		conn.setDoOutput(true);
+
+		// Set up a stream and write the parameters to the server
+		OutputStream os = conn.getOutputStream();
+		os.write(input.getBytes());
+		os.flush();
+
+		//Loop through the input and build the response string.
+		//When done, close the stream.
+		BufferedReader in = new BufferedReader(new InputStreamReader((conn.getInputStream())));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		//Loop through the input and build the response string.
+		//When done, close the stream.
+
+		while ((inputLine = in.readLine()) != null)
+		{
+			response.append(inputLine);
+		}
+
+		in.close();
+		conn.disconnect();
+
+		return(response.toString());
 	}
 
 	private String get(String url) throws Exception{

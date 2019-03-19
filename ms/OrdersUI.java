@@ -349,6 +349,6 @@ public class OrdersUI
 				System.exit(0);
 			} // if
 		}
-	}
+	}//authenticate
 
 } // OrdersUI

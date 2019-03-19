@@ -26,6 +26,8 @@
 ******************************************************************************************************************/
 
 var mysql   = require("mysql");     //Database
+var CREDFUN = require("./md5");      //md5 function
+var credentials = new Set([]);      //credentials collection
 
 function REST_ROUTER(router,connection) {
     var self = this;
@@ -107,7 +109,6 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         var table = ['orders','order_id',req.params.order_id];
         query = mysql.format(query,table);
         connection.query(query,function (err,rows) {
-            console.log(err)
             if (err){
                 res.json({"Error":true, "Message":"Error executing MySQL query"});
             }else{
@@ -116,6 +117,23 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         })
     });
 
+    router.post("/orders/signin/",function (req,res) {
+        console.log(req.body.username+" is trying to sign in");
+        username = req.body.username;
+        password = req.body.password;
+        var query = "SELECT * FROM ?? where ??=? and ??=?;";
+        var table = ["users","user_name",username,"password",password];
+        query = mysql.format(query,table);
+        connection.query(query, function (err,rows) {
+            if (err){
+                res.json({"Error":true,"Message":"Error occurred when execute signin sql: "+err})
+            } else if(rows.length > 0){
+                var credential = CREDFUN.MD5(username+Date.now());
+                credentials.add(credential);
+                res.json({"Error":false,"Credential":credential});
+           }
+        });
+    });
 }
 
 // The next line just makes this module available... think of it as a kind package statement in Java
