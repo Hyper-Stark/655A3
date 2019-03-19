@@ -44,4 +44,10 @@ public interface UserServicesAI extends java.rmi.Remote{
      *******************************************************/
     boolean validateCredential(String credential) throws Exception;
 
+    /*******************************************************
+     * This method will delete the given credential from server side
+     * @param credential the credential will be remove
+     * @throws Exception exception when error occurred
+     *******************************************************/
+    void signout(String credential) throws Exception;
 }

@@ -186,4 +186,7 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
     }
 
 
+    public void signout(String credential) throws Exception{
+        credentials.remove(credential);
+    }
 }

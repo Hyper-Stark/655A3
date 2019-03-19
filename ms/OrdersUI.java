@@ -250,6 +250,7 @@ public class OrdersUI
 				// Here the user is done, so we set the Done flag and halt the system
 
 				done = true;
+				api.signout(credential);
 				System.out.println( "\nDone...\n\n" );
 				Logger.info("System exits");
 
