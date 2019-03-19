@@ -25,9 +25,11 @@
 *
 ******************************************************************************************************************/
 
+var fs      = require("fs");
 var mysql   = require("mysql");     //Database
 var CREDFUN = require("./md5");      //md5 function
 var credentials = new Set([]);      //credentials collection
+
 
 function REST_ROUTER(router,connection) {
     var self = this;
@@ -57,6 +59,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         var credential = req.get("Credential")
         if (!credentials.has(credential)){
             res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            loginfo("User validation failed, please sign in! ");
             return;
         }
         console.log("Validate credential successfully!");
@@ -66,9 +69,11 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query to retrieve order"});
+                logerror("Error executing MySQL query to retrieve order");
             } else {
                 res.json({"Error" : false, "Message" : "Retrieve succeed ", "Orders" : rows});
+                loginfo("Retrieve succeed ");
             }
         });
     });
@@ -83,6 +88,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         var credential = req.get("Credential")
         if (!credentials.has(credential)){
             res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            loginfo("User validation failed, please sign in! ");
             return;
         }
         console.log("Validate credential successfully!");
@@ -92,12 +98,15 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query to retrieve a specific order"});
+                logerror("Error executing MySQL query to retrieve a specific order");
             } else {
                 if (rows.length > 0){
                     res.json({"Error" : false, "Message" : "Retrieve succeed ", "Order" : rows[0]});
+                    loginfo("Retrieve specific order succeed");
                 }else{
                     res.json({"Error": true, "Message": "the order indicated by the given id does not exist!"});
+                    loginfo("the order indicated by the given id does not exist!");
                 }
             }
         });
@@ -112,19 +121,28 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         var credential = req.get("Credential")
         if (!credentials.has(credential)){
             res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            loginfo("User validation failed, please sign in! ");
             return;
         }
         console.log("Validate credential successfully!");
 
-        console.log("Adding to orders table ", req.body.order_date,",",req.body.first_name,",",req.body.last_name,",",req.body.address,",",req.body.phone);
+        var orderinfo = req.body.order_date+","+req.body.first_name+","+req.body.last_name+","+req.body.address+","+req.body.phone;
+        console.log("Adding to orders table ", orderinfo);
         var query = "INSERT INTO ??(??,??,??,??,??) VALUES (?,?,?,?,?)";
         var table = ["orders","order_date","first_name","last_name","address","phone",req.body.order_date,req.body.first_name,req.body.last_name,req.body.address,req.body.phone];
         query = mysql.format(query,table);
         connection.query(query,function(err,rows){
             if(err) {
-                res.json({"Error" : true, "Message" : "Error executing MySQL query"});
+                res.json({"Error" : true, "Message" : "Error executing MySQL query to insert new orders"});
+                logerror("Error executing MySQL query to insert new orders");
             } else {
-                res.json({"Error" : false, "Message" : "Order Added !"});
+                if (rows.affectedRows > 0){
+                    res.json({"Error" : false, "Message" : "Order Added :"+orderinfo});
+                    loginfo("Order Added: "+orderinfo);
+                }else{
+                    res.json({"Error" : true, "Message" : "Adding order failed! "});
+                    loginfo("Adding order failed! ")
+                }
             }
         });
     });
@@ -134,6 +152,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         var credential = req.get("Credential")
         if (!credentials.has(credential)){
             res.json({"Error":true,"Message":"User validation failed, please sign in! "});
+            loginfo("User validation failed, please sign in! ");
             return;
         }
 
@@ -142,12 +161,15 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         query = mysql.format(query,table);
         connection.query(query,function (err,rows) {
             if (err){
-                res.json({"Error":true, "Message":"Error executing MySQL query"});
+                res.json({"Error":true, "Message":"Error executing MySQL query when trying to delete an order"});
+                logerror("Error executing MySQL query when trying to delete an order"+err);
             }else{
                 if(rows.affectedRows > 0){
                     res.json({"Error" : false, "Message" : "Order deleted !"});
+                    loginfo("Order deleted :"+req.params.order_id);
                 }else{
                     res.json({"Error": true, "Message": "The order indicated by the given order_id("+req.params.order_id+") does not exist!"})
+                    loginfo("The order indicated by the given order_id("+req.params.order_id+") does not exist!");
                 }
             }
         })
@@ -163,12 +185,15 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         connection.query(query, function (err,rows) {
             if (err){
                 res.json({"Error":true,"Message":"Error occurred when execute sign in sql: "+err})
+                logerror("Error occurred when execute sign in sql: "+err);
             } else if(rows.length > 0){
                 var credential = CREDFUN.MD5(username+Date.now());
                 credentials.add(credential);
                 res.json({"Error":false,"Credential":credential});
+                loginfo("sign in succeed: "+username);
            } else {
                 res.json({"Error":true,"Credential":""});
+                loginfo("sign in failed:! "+password);
             }
         });
     });
@@ -184,22 +209,26 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         connection.query(query,function (err,rows) {
             if (err){
                 res.json({"Error":true,"Message":"Error occurred when execute sign up query sql: "+err})
+                logerror("Error occurred when execute sign up query sql: "+err);
             }else{
                 if (rows.length > 0){
                     res.json({"Error":true,"Message":"This username has been used, please try another"});
+                    loginfo("This username has been used, please try another");
                 }else{
-
                     var insert = "INSERT INTO users(??,??) VALUES(?,?)";
                     var args  = ["user_name","password",username,password];
                     insert = mysql.format(insert,args);
                     connection.query(insert,function (err, result) {
                         if (err){
                             res.json({"Error":true,"Message":"Error occurred when execute sign up insert sql: "+ err});
+                            logerror("Error occurred when execute sign up insert sql: "+ err);
                         }else{
                             if (result.affectedRows > 0){
                                 res.json({"Error":false,"Message":"Signed up successfully! "});
+                                loginfo("Signed up successfully! ");
                             }else {
                                 res.json({"Error":true,"Message":"Failed to sign up! "});
+                                loginfo("Failed to sign up! ");
                             }
                         }
                     });
@@ -212,3 +241,24 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
 // The next line just makes this module available... think of it as a kind package statement in Java
 
 module.exports = REST_ROUTER;
+
+function loginfo(content) {
+    return logger(content," [INFO] ");
+}
+
+function logerror(content) {
+    return logger(content," [ERROR] ");
+}
+
+function logger(content,level) {
+
+    var datestring = new Date().toISOString().split('T')[0];
+    var timestring = new Date().toISOString().replace('T',' ');
+
+    var filename = datestring+'-server.log';
+    var line = timestring + level + content + "\n";
+
+    fs.appendFile(filename, line, function (err) {
+        if (err) throw err;
+    });
+}
