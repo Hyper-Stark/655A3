@@ -21,26 +21,47 @@ import java.util.Date;
 
 public class Logger {
 
-    private static FileWriter fw;
-    private static BufferedWriter logger;
-    private static SimpleDateFormat format;
+    private FileWriter fw;
+    private BufferedWriter bw;
+    private static final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");;
 
-    static {
-        format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    /*********************************************
+     * Private constructor method.
+     * The only way can get a caller-related
+     * Logger instance is calling getInstance
+     * @param filename
+     ********************************************/
+    private Logger(String filename){
         try {
-            fw = new FileWriter(new SimpleDateFormat("yyyy-MM-dd").format(new Date())+".log");
-            logger = new BufferedWriter(fw);
+            this.fw = new FileWriter(filename);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        this.bw = new BufferedWriter(fw);
     }
 
+    /*******************************************
+     * This method is used to return a caller-related
+     * Logger instance. Different caller has different
+     * log file to write.
+     * @param clazz the caller class
+     * @return the corresponding Logger
+     ******************************************/
+    public static Logger getInstance(Class clazz){
+
+        if(clazz == null){
+            throw new RuntimeException("Register class should not be null! ");
+        }
+
+        String filename = new SimpleDateFormat("yyyy-MM-dd").format(new Date())+"-"+clazz.getName()+".log";
+        return new Logger(filename);
+    }
 
     /******************************************
      * Record information on info level
      * @param msg messages need to be record
      ******************************************/
-    public static void info(String msg){
+    public void info(String msg){
         log("[INFO]",msg);
     }
 
@@ -48,7 +69,7 @@ public class Logger {
      * Record information on error level
      * @param msg messages need to be record
      ******************************************/
-    public static void error(String msg){
+    public void error(String msg){
         log("[ERROR]",msg);
     }
 
@@ -57,10 +78,10 @@ public class Logger {
      * @param level the log level need to be write down
      * @param msg messages need to be record
      ******************************************/
-    private static void log(String level, String msg){
+    private void log(String level, String msg){
         try {
-            logger.write(format.format(new Date())+" "+level+" "+msg+"\n");
-            logger.flush();
+            bw.write(format.format(new Date())+" "+level+" "+msg+"\n");
+            bw.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -29,8 +29,8 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
     // Set up the orderinfo database credentials
     static final String USER = "archims";
     static final String PASS = "msorder"; //replace with your MySQL root password
-
     private UserServicesAI userServices;
+    private static Logger logger = Logger.getInstance(DeleteServices.class);
 
     // Main service loop
     public static void main(String args[])
@@ -42,27 +42,17 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
         try
         {
             DeleteServices obj = new DeleteServices();
-
             // Bind this object instance to the name RetrieveServices in the rmiregistry
             Naming.rebind("//localhost:1099/DeleteServices", obj);
 
         } catch (Exception e) {
-
             System.out.println("DeleteServices binding err: " + e.getMessage());
-            Logger.error("DeleteServices binding err: " + e.getMessage());
+            logger.error("DeleteServices binding err: " + e.getMessage());
         }
 
     } // main
 
-    public DeleteServices() throws RemoteException {
-        try {
-            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
-        } catch (NotBoundException e) {
-            Logger.error("Cannot found user service"+e.getMessage());
-        } catch (MalformedURLException e) {
-            Logger.error("Wrong url for looking user service"+e.getMessage());
-        }
-    }
+    public DeleteServices() throws RemoteException{ }
 
     @Override
     public int deleteOrder(String credential, String orderid) throws RemoteException {
@@ -88,6 +78,8 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
             //System.out.println("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
 
+            logger.info("Trying to delete order by id: "+orderid);
+
             // Here we create the queery Execute a query. Note that the Statement class is part
             // of the Java.rmi.* package that enables you to submit SQL queries to the database
             // that we are connected to (via JDBC in this case).
@@ -97,6 +89,8 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
             String sql = "DELETE FROM orders where order_id=" + orderid;
             amount = stmt.executeUpdate(sql);
 
+            logger.info(amount+" lines were affected! ");
+
             // Clean-up environment
             stmt.close();
             conn.close();
@@ -104,7 +98,7 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
             conn.close();
 
         } catch (Exception e) {
-            Logger.error("Delete order by order id("+orderid+") occurred an error: "+e.getMessage());
+            logger.error("Delete order by order id("+orderid+") occurred an error: "+e.getMessage());
             return -1;
         }
 
@@ -119,11 +113,11 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
 
         try {
             if (!this.userServices.validateCredential(credential)) {
-                Logger.error("Verify user credential failed: ");
+                logger.error("Verify user credential failed: ");
                 throw new RemoteException("Verify user credential failed");
             }
         }catch (Exception e2) {
-            Logger.error("Verify user credential failed: "+e2.getMessage());
+            logger.error("Verify user credential failed: "+e2.getMessage());
             throw new RemoteException("Verify user credential failed",e2);
         }
     }
@@ -132,11 +126,11 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
         try {
             this.userServices = (UserServicesAI)Naming.lookup("UserServices");
         } catch (NotBoundException e) {
-            Logger.error("Cannot found user service"+e.getMessage());
+            logger.error("Cannot found user service"+e.getMessage());
         } catch (MalformedURLException e) {
-            Logger.error("Wrong url for looking user service"+e.getMessage());
+            logger.error("Wrong url for looking user service"+e.getMessage());
         } catch (RemoteException e) {
-            Logger.error("RemoteException: "+e.getMessage());
+            logger.error("RemoteException: "+e.getMessage());
         }
     }
 }

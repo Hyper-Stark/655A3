@@ -38,13 +38,13 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
     static final String PASS = "msorder"; //replace with your MySQL root password
     private static final Set<String> credentials = new HashSet<String>();
     private static MessageDigest oracle = null;
-
+    private static final Logger logger = Logger.getInstance(UserServices.class);
 
     static {
         try {
             oracle = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            Logger.error("Initialize MessageDigest(MD5) failed");
+            logger.error("Initialize MessageDigest(MD5) failed");
         }
     }
 
@@ -65,7 +65,7 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
         } catch (Exception e) {
 
             System.out.println("UserServices binding err: " + e.getMessage());
-            Logger.error("UserServices binding err: " + e.getMessage());
+            logger.error("UserServices binding err: " + e.getMessage());
         }
 
     } // main
@@ -97,6 +97,8 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
             // of the Java.rmi.* package that enables you to submit SQL queries to the database
             // that we are connected to (via JDBC in this case).
 
+            logger.info(username+" is trying to sign in");
+
             // System.out.println("Creating statement...");
             stmt = conn.createStatement();
 
@@ -113,13 +115,14 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
                 byte[] bytes = (username+System.currentTimeMillis()).getBytes();
                 String cred = new BigInteger(1,oracle.digest(bytes)).toString(16);
                 credentials.add(cred);
+                logger.info(username+" signed in successfully");
                 return cred;
             }
 
             return "";
 
         }catch (Exception e){
-            Logger.error("User "+username+" sign-in error: " + e.getMessage());
+            logger.error("User "+username+" sign-in error: " + e.getMessage());
         }
 
         return "";
@@ -170,13 +173,14 @@ public class UserServices extends UnicastRemoteObject implements UserServicesAI{
             int amount = stmt.executeUpdate(sql);
 
             if(amount > 0){
+                logger.info(username+" signed up successfully! ");
                 return "Signed up successfully! ";
             }else{
                 return "Failed to sign up! ";
             }
 
         }catch (Exception e){
-            Logger.error("User "+username+" sign-up error: " + e.getMessage());
+            logger.error("User "+username+" sign-up error: " + e.getMessage());
             return e.getMessage();
         }
     }

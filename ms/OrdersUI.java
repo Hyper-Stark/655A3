@@ -45,8 +45,9 @@ public class OrdersUI
 		LocalDate localDate = null;					// Date object
 		MSClientAPI api = new MSClientAPI();	// RESTful api object
 		String credential = null;
+		Logger logger = Logger.getInstance(OrdersUI.class);
 
-		credential = authenticate(keyboard,api);
+		credential = authenticate(keyboard,api,logger);
 
 		/////////////////////////////////////////////////////////////////////////////////
 		// Main UI loop
@@ -69,7 +70,7 @@ public class OrdersUI
 			keyboard.nextLine();	// Removes data from keyboard buffer. If you don't clear the buffer, you blow
 									// through the next call to nextLine()
 
-			Logger.info("user input: "+option);
+			logger.info("user input: "+option);
 
 			//////////// option 1 ////////////
 
@@ -82,11 +83,11 @@ public class OrdersUI
 				{
 					response = api.retrieveOrders(credential);
 					System.out.println(response);
-					Logger.info(response);
+					logger.info(response);
 
 				} catch (Exception e) {
 					System.out.println("Request failed:: " + e);
-					Logger.error("Request failed:: " + e);
+					logger.error("Request failed:: " + e);
 				}
 
 				System.out.println("\nPress enter to continue..." );
@@ -108,7 +109,7 @@ public class OrdersUI
 					System.out.print( "\nEnter the order ID: " );
 					orderid = keyboard.nextLine();
 
-					Logger.info("Input order ID: "+orderid);
+					logger.info("Input order ID: "+orderid);
 
 					try
 					{
@@ -128,10 +129,10 @@ public class OrdersUI
 					response = api.retrieveOrders(credential, orderid);
 					System.out.println(response);
 
-					Logger.info("Retrieve order by id response: "+response);
+					logger.info("Retrieve order by id response: "+response);
 
 				} catch (Exception e) {
-					Logger.error("Request failed:: " + e);
+					logger.error("Request failed:: " + e);
 					System.out.println("Request failed:: " + e);
 				}
 
@@ -177,18 +178,18 @@ public class OrdersUI
 				if (( option == 'y') || (option == 'Y'))
 				{
 
-					Logger.info("Adding a new order -> Date: "+date+" First name: " + first + " Last name: " +last + " Address: "+ address +" Phone: "+phone);
+					logger.info("Adding a new order -> Date: "+date+" First name: " + first + " Last name: " +last + " Address: "+ address +" Phone: "+phone);
 
 					try
 					{
 						System.out.println("\nCreating order...");
 						response = api.newOrder(credential, date, first, last, address, phone);
 						System.out.println(response);
-						Logger.info(response);
+						logger.info(response);
 					} catch(Exception e) {
 
 						System.out.println("Request failed:: " + e);
-						Logger.error("Request failed:: " + e);
+						logger.error("Request failed:: " + e);
 					}
 
 				} else {
@@ -222,21 +223,21 @@ public class OrdersUI
 
 				} // while
 
-				Logger.info("Trying to delete order by id: "+orderid);
+				logger.info("Trying to delete order by id: "+orderid);
 
 				try{
 				    //get operation result
 					int amount = api.deleteOrder(credential, orderid);
 					if(amount == 0){
 						System.out.println("The order indicated by the given order_id( "+orderid+" ) does not exist!");
-						Logger.info("The order indicated by the given order_id( "+orderid+" ) does not exist!");
+						logger.info("The order indicated by the given order_id( "+orderid+" ) does not exist!");
 					}else{
 						System.out.println("Delete order by order id: "+orderid+" successfully! ");
-						Logger.info("Delete order by order id: "+orderid+" successfully! ");
+						logger.info("Delete order by order id: "+orderid+" successfully! ");
 					}
 				} catch (Exception e) {
 					System.out.println("Request failed:: " + e);
-					Logger.info("Request failed:: " + e);
+					logger.info("Request failed:: " + e);
 				}
 
 				System.out.println("\nPress enter to continue..." );
@@ -250,9 +251,13 @@ public class OrdersUI
 				// Here the user is done, so we set the Done flag and halt the system
 
 				done = true;
-				api.signout(credential);
+				try {
+					api.signout(credential);
+				}catch (Exception e){
+					logger.error("Failed to logout, but it does not matter! "+e.getMessage());
+				}
 				System.out.println( "\nDone...\n\n" );
-				Logger.info("System exits");
+				logger.info("System exits");
 
 			} // if
 
@@ -261,7 +266,7 @@ public class OrdersUI
   	} // main
 
 
-	public static String authenticate(Scanner keyboard, MSClientAPI api){
+	public static String authenticate(Scanner keyboard, MSClientAPI api,Logger logger){
 
 		while (true){
 
@@ -292,16 +297,16 @@ public class OrdersUI
 
 					if (credential != null && credential.length() > 0){
 						System.out.println("Signed in successfully! ");
-						Logger.info("User "+username+" signed in successfully");
+						logger.info("User "+username+" signed in successfully");
 						return credential;
 					}else{
 						System.out.println("Incorrect user name or password! ");
-						Logger.info("User entered incorrect username or password");
+						logger.info("User entered incorrect username or password");
 					}
 
 				}catch (Exception e){
 					System.out.println("Sign in failed:: " + e);
-					Logger.error("User "+username+" tried to sign in and failed");
+					logger.error("User "+username+" tried to sign in and failed");
 				}
 			}
 
@@ -330,13 +335,13 @@ public class OrdersUI
 				}
 
 				try {
-					Logger.info("User "+username+" is trying to sign up!");
+					logger.info("User "+username+" is trying to sign up!");
 					signupRes = api.signup(username, password);
-					Logger.info("Server sign up response: "+signupRes);
+					logger.info("Server sign up response: "+signupRes);
 					System.out.println(signupRes);
 				}catch (Exception e){
 					System.out.println("Sign up failed:: " + e);
-					Logger.error("Sign up failed:: " + e);
+					logger.error("Sign up failed:: " + e);
 				}
 			}
 
@@ -345,7 +350,7 @@ public class OrdersUI
 			else if ( ( option == 'X' ) || ( option == 'x' )) {
 				// Here the user is done, so we set the Done flag and halt the system
 				System.out.println( "\nDone...\n\n" );
-				Logger.info("System exits before authentication");
+				logger.info("System exits before authentication");
 				System.exit(0);
 			} // if
 		}

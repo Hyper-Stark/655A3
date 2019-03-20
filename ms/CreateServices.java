@@ -36,17 +36,10 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
     static final String USER = "archims";
     static final String PASS = "msorder"; //replace with your MySQL root password
     private UserServicesAI userServices;
+    private static final Logger logger = Logger.getInstance(CreateServices.class);
 
     // Do nothing constructor
-    public CreateServices() throws RemoteException {
-        try {
-            this.userServices = (UserServicesAI)Naming.lookup("UserServices");
-        } catch (NotBoundException e) {
-            Logger.error("Cannot found user service"+e.getMessage());
-        } catch (MalformedURLException e) {
-            Logger.error("Wrong url for looking user service"+e.getMessage());
-        }
-    }
+    public CreateServices() throws RemoteException {}
 
     // Main service loop
     public static void main(String args[]) 
@@ -63,9 +56,8 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
             Naming.rebind("//localhost:1099/CreateServices", obj); 
 
         } catch (Exception e) {
-
             System.out.println("CreateServices binding err: " + e.getMessage()); 
-            Logger.error("CreateServices binding err: " + e.getMessage());
+            logger.error("CreateServices binding err: " + e.getMessage());
         } 
 
     } // main
@@ -102,6 +94,8 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
             // that we are connected to (via JDBC in this case).
 
             stmt = conn.createStatement();
+
+            logger.info("Adding a new order -> Date: "+idate+" First name: " + ifirst + " Last name: " +ilast + " Address: "+ iaddress +" Phone: "+iphone);
             
             String sql = "INSERT INTO ORDERS(order_date, first_name, last_name, address, phone) VALUES (\""+idate+"\",\""+ifirst+"\",\""+ilast+"\",\""+iaddress+"\",\""+iphone+"\")";
 
@@ -117,7 +111,7 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
             conn.close();
 
         } catch(Exception e) {
-            Logger.error("Creating an order occurred an error: "+e.getMessage());
+            logger.error("Creating an order occurred an error: "+e.getMessage());
             ReturnString = e.toString();
         } 
         
@@ -133,11 +127,11 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
 
         try {
             if (!this.userServices.validateCredential(credential)) {
-                Logger.error("Verify user credential failed: ");
+                logger.error("Verify user credential failed: ");
                 throw new RemoteException("Verify user credential failed");
             }
         }catch (Exception e2) {
-            Logger.error("Verify user credential failed: "+e2.getMessage());
+            logger.error("Verify user credential failed: "+e2.getMessage());
             throw new RemoteException("Verify user credential failed",e2);
         }
     }
@@ -146,11 +140,11 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
         try {
             this.userServices = (UserServicesAI)Naming.lookup("UserServices");
         } catch (NotBoundException e) {
-            Logger.error("Cannot found user service"+e.getMessage());
+            logger.error("Cannot found user service"+e.getMessage());
         } catch (MalformedURLException e) {
-            Logger.error("Wrong url for looking user service"+e.getMessage());
+            logger.error("Wrong url for looking user service"+e.getMessage());
         } catch (RemoteException e) {
-            Logger.error("RemoteException: "+e.getMessage());
+            logger.error("RemoteException: "+e.getMessage());
         }
     }
 } // RetrieveServices

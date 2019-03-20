@@ -37,6 +37,7 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
     static final String USER = "archims";
     static final String PASS = "msorder"; //replace with your MySQL root password
     private UserServicesAI userServices;
+    private static final Logger logger = Logger.getInstance(RetrieveServices.class);
 
     // Do nothing constructor
     public RetrieveServices() throws RemoteException {}
@@ -58,7 +59,7 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
         } catch (Exception e) {
 
             System.out.println("RetrieveServices binding err: " + e.getMessage());
-            Logger.error("RetrieveServices binding err: " + e.getMessage());
+            logger.error("RetrieveServices binding err: " + e.getMessage());
         } 
 
     } // main
@@ -96,6 +97,8 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
             // of the Java.rmi.* package that enables you to submit SQL queries to the database
             // that we are connected to (via JDBC in this case).
 
+            logger.info("Trying to retrieve all orders");
+
             // System.out.println("Creating statement...");
             stmt = conn.createStatement();
             
@@ -130,6 +133,8 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
             ReturnString = ReturnString +"]";
 
+            logger.info("Retrieved the following orders: "+ReturnString);
+
             //Clean-up environment
 
             rs.close();
@@ -139,7 +144,7 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
             conn.close();
 
         } catch(Exception e) {
-            Logger.error("Retrieve orders occurred an error: " + e.getMessage());
+            logger.error("Retrieve orders occurred an error: " + e.getMessage());
             ReturnString = e.toString();
         } 
         
@@ -178,6 +183,8 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
             // of the Java.rmi.* package that enables you to submit SQL queries to the database
             // that we are connected to (via JDBC in this case).
 
+            logger.info("Trying to retrieve order by id "+orderid);
+
             // System.out.println("Creating statement...");
             stmt = conn.createStatement();
             
@@ -213,6 +220,8 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
             ReturnString = ReturnString +"]";
 
+            logger.info("Retrieved the following orders: "+ReturnString);
+
             //Clean-up environment
 
             rs.close();
@@ -223,7 +232,7 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
         } catch(Exception e) {
 
-            Logger.error("Retrieve order by order id ("+orderid+") occurred an error: " + e.getMessage());
+            logger.error("Retrieve order by order id ("+orderid+") occurred an error: " + e.getMessage());
             ReturnString = e.toString();
         } 
 
@@ -239,11 +248,11 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
 
         try {
             if (!this.userServices.validateCredential(credential)) {
-                Logger.error("Verify user credential failed: ");
+                logger.error("Verify user credential failed: ");
                 throw new RemoteException("Verify user credential failed");
             }
         }catch (Exception e2) {
-            Logger.error("Verify user credential failed: "+e2.getMessage());
+            logger.error("Verify user credential failed: "+e2.getMessage());
             throw new RemoteException("Verify user credential failed",e2);
         }
     }
@@ -252,11 +261,11 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
         try {
             this.userServices = (UserServicesAI)Naming.lookup("UserServices");
         } catch (NotBoundException e) {
-            Logger.error("Cannot found user service"+e.getMessage());
+            logger.error("Cannot found user service"+e.getMessage());
         } catch (MalformedURLException e) {
-            Logger.error("Wrong url for looking user service"+e.getMessage());
+            logger.error("Wrong url for looking user service"+e.getMessage());
         } catch (RemoteException e) {
-            Logger.error("RemoteException: "+e.getMessage());
+            logger.error("RemoteException: "+e.getMessage());
         }
     }
 } // RetrieveServices

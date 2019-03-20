@@ -103,12 +103,8 @@ public class MSClientAPI
    		   return stub.signup(username, password);
 	}
 
-	public void signout(String credential){
-		try {
-			UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
-			stub.signout(credential);
-		} catch (Exception e) {
-			Logger.error("Failed to logout, but it does not matter! "+e.getMessage());
-		}
+	public void signout(String credential) throws Exception{
+		   UserServicesAI stub = (UserServicesAI) Naming.lookup("UserServices");
+		   stub.signout(credential);
 	}
 }
