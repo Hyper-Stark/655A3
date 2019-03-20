@@ -138,8 +138,6 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
             //Clean-up environment
 
             rs.close();
-            stmt.close();
-            conn.close();
             stmt.close(); 
             conn.close();
 
@@ -225,8 +223,6 @@ public class RetrieveServices extends UnicastRemoteObject implements RetrieveSer
             //Clean-up environment
 
             rs.close();
-            stmt.close();
-            conn.close();
             stmt.close(); 
             conn.close();
 

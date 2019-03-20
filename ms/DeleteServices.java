@@ -94,8 +94,6 @@ public class DeleteServices extends UnicastRemoteObject implements DeleteService
             // Clean-up environment
             stmt.close();
             conn.close();
-            stmt.close();
-            conn.close();
 
         } catch (Exception e) {
             logger.error("Delete order by order id("+orderid+") occurred an error: "+e.getMessage());

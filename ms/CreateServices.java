@@ -107,8 +107,6 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
 
             stmt.close();
             conn.close();
-            stmt.close(); 
-            conn.close();
 
         } catch(Exception e) {
             logger.error("Creating an order occurred an error: "+e.getMessage());
