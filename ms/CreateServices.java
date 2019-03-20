@@ -119,6 +119,13 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
 
     } //retrieve all orders
 
+    /*****************************************************************
+     * This method is used to validate user's credential.
+     * CreateServices only provide services to users who have
+     * been authenticated.
+     * @param credential the current request's user credential
+     * @throws RemoteException
+     *****************************************************************/
     private void validate(String credential) throws RemoteException {
 
         if (this.userServices == null){
@@ -136,6 +143,10 @@ public class CreateServices extends UnicastRemoteObject implements CreateService
         }
     }
 
+    /*****************************************************************
+     * Since this service has to rely on UserService to do credential
+     * validation, this method is used to looking for avaliable UserServices
+     *****************************************************************/
     private void initUserService(){
         try {
             this.userServices = (UserServicesAI)Naming.lookup("UserServices");
