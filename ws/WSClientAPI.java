@@ -80,11 +80,29 @@ public class WSClientAPI
 		return extractField("Message",resp);
     } // newOrder
 
+
+	/*******************************************************************************
+	 * Description: This method is used to provide delete order service
+	 * The implementation is the method send a get http request to server
+	 * and server do the delete action.
+	 * @param credential user credential, the user has to sign in to do this
+	 * @param orderId the id of the order need to be deleted.
+	 * @return the server end message.
+	 * @throws Exception
+	 *******************************************************************************/
 	public String deleteOrder(String credential, String orderId) throws Exception{
-		String resp = post(credential,"http://localhost:3000/api/orders/delete/"+orderId,null);
+		String resp = get(credential,"http://localhost:3000/api/orders/delete/"+orderId);
 		return extractField("Message",resp);
 	}
 
+	/******************************************************************************
+	 * Description: This method is used to provide sign in function, user need to
+	 * provide a pair of username and password.
+	 * @param username the username need to be verified
+	 * @param passwd the corresponding password need to be verified
+	 * @return the server end message
+	 * @throws Exception
+	 *****************************************************************************/
 	public String signin(String username, String passwd) throws Exception{
    		Map<String,String> params = new HashMap<String,String>();
    		params.put("username",username);
@@ -93,6 +111,14 @@ public class WSClientAPI
 		return extractField("Credential",resp);
 	}
 
+	/******************************************************************************
+	 * Description: This method is used to provide sign up function, user need to
+	 * provide a pair of username and password.
+	 * @param username the username need to be created
+	 * @param passwd the corresponding password need to be created
+	 * @return the server end message
+	 * @throws Exception
+	 *****************************************************************************/
 	public String signup(String username, String passwd) throws Exception{
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("username",username);
@@ -101,6 +127,15 @@ public class WSClientAPI
 		return extractField("Message",resp);
 	}
 
+	/******************************************************************************
+	 * Description: This method is a helper method which can simplify the process to
+	 * send a HTTP post request. It encapsulated the whole sending and reading process
+	 * @param credential the user credential
+	 * @param urlStr the target url
+	 * @param data the data that need to be passed
+	 * @return the server end message
+	 * @throws Exception
+	 *****************************************************************************/
 	private String post(String credential, String urlStr, Map<String,String> data) throws Exception{
 		// Set up the URL and connect to the node server
 		URL url = new URL(urlStr);
@@ -159,6 +194,14 @@ public class WSClientAPI
 		return(response.toString());
 	}
 
+	/******************************************************************************
+	 * Description: This method is a helper method which can simplify the process to
+	 * send a HTTP get request. It encapsulated the whole sending and reading process
+	 * @param credential the user credential
+	 * @param url the target url
+	 * @return the server end message
+	 * @throws Exception
+	 *****************************************************************************/
 	private String get(String credential, String url) throws Exception{
 		// Set up the URL and connect to the node server
 		URL obj = new URL(url);
@@ -188,6 +231,13 @@ public class WSClientAPI
 		return (response.toString());
 	}
 
+	/******************************************************************************
+	 * Description: this is a helper function that can help us to extract a specific
+	 * field from a json string.
+	 * @param key the field's name
+	 * @param msg the whole json string
+	 * @return the field's value
+	 ******************************************************************************/
 	private static String extractField(String key, String msg){
 		JSONObject obj = new JSONObject(msg);
 		return obj.get(key).toString();

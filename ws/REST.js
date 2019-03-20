@@ -83,8 +83,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
     // res parameter is the response object
      
     router.get("/orders/:order_id",function(req,res){
-        console.log("Getting order ID: ", req.params.order_id );
 
+
+        //credential validation
         var credential = req.get("Credential")
         if (!credentials.has(credential)){
             res.json({"Error":true,"Message":"User validation failed, please sign in! "});
@@ -92,6 +93,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
             return;
         }
         console.log("Validate credential successfully!");
+
+        console.log("Getting order ID: ", req.params.order_id );
 
         var query = "SELECT * FROM ?? WHERE ??=?";
         var table = ["orders","order_id",req.params.order_id];
@@ -118,6 +121,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
   
     router.post("/orders",function(req,res){
 
+        //credential validation
         var credential = req.get("Credential")
         if (!credentials.has(credential)){
             res.json({"Error":true,"Message":"User validation failed, please sign in! "});
@@ -147,8 +151,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         });
     });
 
-    router.post("/orders/delete/:order_id",function (req,res) {
-        console.log("Getting order ID:" + req.params.order_id);
+    // GET for /orders/delete/order id specifier - delete the order for the provided order ID
+    // req paramdter is the request object
+    // res parameter is the response object
+    router.get("/orders/delete/:order_id",function (req,res) {
+
+        //credential validation
         var credential = req.get("Credential")
         if (!credentials.has(credential)){
             res.json({"Error":true,"Message":"User validation failed, please sign in! "});
@@ -156,6 +164,7 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
             return;
         }
 
+        console.log("Getting order ID:" + req.params.order_id);
         var query = "DELETE FROM ?? where ??=?;";
         var table = ['orders','order_id',req.params.order_id];
         query = mysql.format(query,table);
@@ -175,6 +184,8 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         })
     });
 
+    // POST for /orders/signin/ - verify user's username and password and return the credential if
+    // username and password are correct.
     router.post("/orders/signin/",function (req,res) {
         console.log(req.body.username+" is trying to sign in");
         username = req.body.username;
@@ -199,6 +210,9 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
     });
 
 
+    // POST for /orders/signup - create a new pair of username and password
+    // if the user name has been used, return error message
+    // if the user name is avaliable, create that pair.
     router.post("/orders/signup",function (req,res) {
         console.log("Trying to register a new account");
         username = req.body.username;
@@ -242,14 +256,20 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
 
 module.exports = REST_ROUTER;
 
+//this method is a wrapper function of logger
+//it provides info level logger function
 function loginfo(content) {
     return logger(content," [INFO] ");
 }
 
+//this method is a wrapper function of logger
+//it provides error level logger function
 function logerror(content) {
     return logger(content," [ERROR] ");
 }
 
+//this method will write logs into the log file.
+//current date + 'server' is the log file name.
 function logger(content,level) {
 
     var datestring = new Date().toISOString().split('T')[0];
