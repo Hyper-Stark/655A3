@@ -209,6 +209,12 @@ REST_ROUTER.prototype.handleRoutes= function(router,connection) {
         });
     });
 
+    router.post("/orders/singout/",function (req,res) {
+            console.log("user sign out");
+            credentials.remove(credential)
+            loginfo("user sign out");
+    });
+
 
     // POST for /orders/signup - create a new pair of username and password
     // if the user name has been used, return error message

@@ -127,6 +127,12 @@ public class WSClientAPI
 		return extractField("Message",resp);
 	}
 
+	public String signout(String credential) throws Exception{
+		Map<String,String> params = new HashMap<String,String>();
+		String resp = post(null,"http://localhost:3000/api/orders/signout/",params);
+		return extractField("Message",resp);
+	}
+
 	/******************************************************************************
 	 * Description: This method is a helper method which can simplify the process to
 	 * send a HTTP post request. It encapsulated the whole sending and reading process

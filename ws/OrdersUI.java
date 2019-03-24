@@ -235,6 +235,11 @@ public class OrdersUI
 				// Here the user is done, so we set the Done flag and halt the system
 
 				done = true;
+				try {
+					api.signout(credential);
+				}catch (Exception e){
+					Logger.error("Failed to logout, but it does not matter! "+e.getMessage());
+				}
 				System.out.println( "\nDone...\n\n" );
 
 			} // if
