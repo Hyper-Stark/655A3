@@ -17,7 +17,7 @@
 *
 * External Dependencies: 
 *	- rmiregistry must be running to start this server
-*	= MySQL
+*	- MySQL
 	- orderinfo database 
 ******************************************************************************************************************/
 import java.net.MalformedURLException;
