@@ -32,13 +32,18 @@
 ### Build Web Service based application
 1. enter into the ws folder with command:
     cd ws
-2. Run the below command to import the json package:
+2. install all the modules required for the node server with commands:
+    npm install express --save
+    npm install mysql --save
+    npm install body-parser --save
+    npm init (accept all defaults)
+3. Run the below command to import the json package:
     export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
-3. compile all java files use the command:
+4. compile all java files use the command:
     javac *.java
-4. start nodejs server using command:
+5. start nodejs server using command:
     node Server.js
-5. Start OrdersUI using command:
+6. Start OrdersUI using command:
     java OrdersUI
 
 ### Micro Sevice based application
