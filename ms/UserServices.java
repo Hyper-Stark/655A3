@@ -2,7 +2,6 @@
  * File: UserServices.java
  * Course: 17655
  * Project: Assignment A3
- * Author: Li Zhang
  *
  * Internal methods:
  * boolean signin(String username, String password)

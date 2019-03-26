@@ -2,7 +2,6 @@
  * File: Logger.java
  * Course: 17655
  * Project: Assignment A3
- * Author: Li Zhang
  *
  * Internal methods:
  * info(String msg)
