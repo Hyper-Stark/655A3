@@ -53,7 +53,7 @@
     cd ms
 2. Run the below command to import the mysql-connector package:
     export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar.
-    For Windows use: set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
+    For Windows use: set CLASSPATH=.:/path_to_ws_directory/mysql-connector-java-5.1.45-bin.jar
 3. compile all java files use the command:
     javac *.java
 4. start rmiregistry using the command:
