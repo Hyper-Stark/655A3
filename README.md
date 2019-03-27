@@ -118,7 +118,9 @@
 
      Solution : Run the below command to import the json package:
 
-     export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar or set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar(Windows)
+     export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
+
+     Or set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar(Windows)
 
      Then compile java files with command "javac *.java" again. path_to_ws_directory.
 
