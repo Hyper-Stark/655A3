@@ -13,7 +13,9 @@
     for detail explanation please refer to A3-installation-Guide.pdf,
     section "setting up the web-services system" and
     "Installation of MySQL"
-2. Create databases and users
+2. Enter into the A3 assignment File using command:
+    cd 655A3
+3.Create databases and users
     a) login to the mysql with command:
     mysql --user=root --password='YourRootPassword'
     b) Create the web-services databas with SQL command:
@@ -22,7 +24,7 @@
     create database ms_orderinfo;
     d) Create the users with SQL command:
     source dbuser.sql;
-3. Copy the schema of the database from the template provided:
+4. Copy the schema of the database from the template provided:
     mysql --user=root --password='YourRootPassword' –D ws_orderinfo <
     dbtemplate.sql
     mysql --user=root --password='YourRootPassword' –D ms_orderinfo <
