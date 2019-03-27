@@ -89,7 +89,7 @@
 
     export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar
 
-    For Windows use: set CLASSPATH=.:/path_to_ws_directory/mysql-connector-java-5.1.45-bin.jar
+    For Windows use: set CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar
 
 3. compile all java files use the command:
 
@@ -165,7 +165,7 @@
 
     export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar
 
-    For Windows use: set CLASSPATH=.:/path_to_ws_directory/mysql-connector-java-5.1.45-bin.jar
+    For Windows use: set CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar
 
     Then compile java files with command "javac *.java" agian.
 
