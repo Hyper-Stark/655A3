@@ -66,11 +66,12 @@
 5. Start OrdersUI using command:
     java OrdersUI
 
-### Possible issue solutions
+### Possible issue and solutions
 1. Exception of java.lang.NoClassDefFoundError: org/json/JSONObject
      Solution : Run the below command to import the json package:
-     export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
-     Then compile java files with command "javac *.java" agian.
+     export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar or set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar(Windows)
+     Then compile java files with command "javac *.java" again. path_to_ws_directory. 
+     In case you kill the terminal or open multiple terminals make sure the CLASSPATH is set
 
 2. Error: cannot find module "express":
     Make sure you have installed nodejs. If not, you can download Node.js from:
