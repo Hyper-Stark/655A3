@@ -1,12 +1,12 @@
 # README.md
 
 ### Changes we made
-1. added a user table in the respect two databases
+1. added a user table respect to two databases
 2. implemented delete function respect to two systems
-3. implemented signin, signup and signout functions respect to two systems
-4. added server side credential validation mechanism respect to two systems
-5. implemented log functions respected to two systems
-6. modified user interface to require users sign in or sign up before they can use the real services.
+3. implemented sign in, sign up and signout functions respect to two systems
+4. added server-side credential validation mechanism respect to two systems
+5. implemented log functions respect to two systems
+6. modified user interface to require users to sign in or sign up before they can use the real services.
 
 ### System installations
 1. install nodejs, MySQL and other dependencies,
@@ -38,7 +38,8 @@
     npm install body-parser --save
     npm init (accept all defaults)
 3. Run the below command to import the json package:
-    export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
+    export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar.
+    For Windows use: set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
 4. compile all java files use the command:
     javac *.java
 5. start nodejs server using command:
@@ -51,7 +52,8 @@
 1. enter into the ws folder with command:
     cd ms
 2. Run the below command to import the mysql-connector package:
-    export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar
+    export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar.
+    For Windows use: set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
 3. compile all java files use the command:
     javac *.java
 4. start rmiregistry using the command:
