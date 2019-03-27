@@ -33,10 +33,10 @@
 1. enter into the ws folder with command:
     cd ws
 2. install all the modules required for the node server with commands:
-    npm install express --save
-    npm install mysql --save
-    npm install body-parser --save
-    npm init (accept all defaults)
+    a) npm install express --save
+    b) npm install mysql --save
+    c) npm install body-parser --save
+    d) npm init (accept all defaults)
 3. Run the below command to import the json package:
     export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar.
     For Windows use: set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
@@ -59,10 +59,10 @@
 4. start rmiregistry using the command:
     rmiregistry &
 5. run all services using commands:
-    java RetrieveServices &
-    java UserServices &
-    java DeleteServices &
-    java CreateServices &
+    a) java RetrieveServices &
+    b) java UserServices &
+    c) java DeleteServices &
+    d) java CreateServices &
 5. Start OrdersUI using command:
     java OrdersUI
 
@@ -71,11 +71,13 @@
      Solution : Run the below command to import the json package:
      export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
      Then compile java files with command "javac *.java" agian.
+
 2. Error: cannot find module "express":
     Make sure you have installed nodejs. If not, you can download Node.js from:
     https://nodejs.org/en/download/
     Then run below command in your web service application folder:
     npm install express --save
+
 3. Mysql database connection error:
     a) login to the mysql with command:
         mysql --user=root --password='YourRootPassword'
@@ -88,3 +90,11 @@
     b) open your CreateService,DeleteService,RetrieveService,UserService
     in micro service application folder,
     change the USER to "root" and PASS to your root password.
+
+4. Error com.mysql.jdbc.Driver in Microservice system:
+    Run the below command to import the mysql-connector package:
+    export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar.
+    For Windows use: set CLASSPATH=.:/path_to_ws_directory/mysql-connector-java-5.1.45-bin.jar
+    Then compile java files with command "javac *.java" agian.
+
+
