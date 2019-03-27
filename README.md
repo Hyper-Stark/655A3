@@ -17,7 +17,7 @@
 
 2. Enter into the A3 assignment File using command:
 
-    cd 655A3
+    cd 655A3-master
 
 3.Create databases and users
 
