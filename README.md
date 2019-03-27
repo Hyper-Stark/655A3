@@ -61,19 +61,19 @@
 
     d) npm init (accept all defaults)
 
-3. Run the below command to import the json package:
-
-    export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar.
-
-    For Windows use: set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
-
-4. compile all java files use the command:
+3. compile all java files use the command:
 
     javac *.java
 
-5. start nodejs server using command:
+4. start nodejs server using command:
 
     node Server.js
+
+5. Start a new terminal and run the below command to import the json package:
+
+    export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
+
+    For Windows use: set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
 
 6. Start OrdersUI using command:
 
@@ -87,7 +87,7 @@
 
 2. Run the below command to import the mysql-connector package:
 
-    export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar.
+    export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar
 
     For Windows use: set CLASSPATH=.:/path_to_ws_directory/mysql-connector-java-5.1.45-bin.jar
 
@@ -123,7 +123,7 @@
 
      Or set CLASSPATH=.:/path_to_ws_directory/json-20160810.jar(Windows)
 
-     Then compile java files with command "javac *.java" again. path_to_ws_directory.
+     Then compile java files with command "javac *.java" again.
 
      In case you kill the terminal or open multiple terminals make sure the CLASSPATH is set
 
@@ -163,7 +163,7 @@
 
     Run the below command to import the mysql-connector package:
 
-    export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar.
+    export CLASSPATH=.:/path_to_ms_directory/mysql-connector-java-5.1.45-bin.jar
 
     For Windows use: set CLASSPATH=.:/path_to_ws_directory/mysql-connector-java-5.1.45-bin.jar
 
