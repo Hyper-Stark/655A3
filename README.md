@@ -63,3 +63,26 @@
     java CreateServices &
 5. Start OrdersUI using command:
     java OrdersUI
+
+### Possible issue solutions
+1. Exception of java.lang.NoClassDefFoundError: org/json/JSONObject
+     Solution : Run the below command to import the json package:
+     export CLASSPATH=.:/path_to_ws_directory/json-20160810.jar
+     Then compile java files with command "javac *.java" agian.
+2. Error: cannot find module "express":
+    Make sure you have installed nodejs. If not, you can download Node.js from:
+    https://nodejs.org/en/download/
+    Then run below command in your web service application folder:
+    npm install express --save
+3. Mysql database connection error:
+    a) login to the mysql with command:
+        mysql --user=root --password='YourRootPassword'
+    b) Create the users with SQL command:
+        source dbuser.sql;
+
+    If this still doesn't work, please:
+    a) open your Server.js in web service application folder,
+    change the user to 'root' and password to your root password.
+    b) open your CreateService,DeleteService,RetrieveService,UserService
+    in micro service application folder,
+    change the USER to "root" and PASS to your root password.
